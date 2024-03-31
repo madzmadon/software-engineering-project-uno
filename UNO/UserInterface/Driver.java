@@ -8,7 +8,8 @@ public class Driver extends JFrame {
     private JPanel cardPanel;
 
     private StartUpPanel startUpPanel;
-
+    private LoginPanel loginPanel;
+    
     public Driver() {
         setTitle("UNO Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -20,19 +21,25 @@ public class Driver extends JFrame {
 
         // Create the StartUpPanel
         startUpPanel = new StartUpPanel(this);
-
+        
+        //Create LoginPanel
+        loginPanel = new LoginPanel(this);
+        
         // Create an instance of GameManagerPanel
         GameManagerPanel gameManagerPanel = new GameManagerPanel(this);
         
         // Create an instance of CreateAccountPanel
         CreateAccountPanel createAccountPanel = new CreateAccountPanel(this);
         
+        //Create an instance of LoginPanel
+        LoginPanel loginPanel = new LoginPanel(this);
 
         // Add panels to the card panel
         cardPanel.add(startUpPanel, "StartUpPanel");
         cardPanel.add(gameManagerPanel, "GameManagerPanel");
         cardPanel.add(createAccountPanel, "CreateAccountPanel");
-
+        cardPanel.add(loginPanel);
+        
         // Initially show the StartUpPanel
         showPanel("StartUpPanel");
 
