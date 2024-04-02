@@ -100,7 +100,7 @@ public LoginPanel(Driver driver)
   });
   
   //Create cancelLoginButton
-  JButton cancelLoginButton = DesignUtils.createSpecialButton("Cancel");
+  JButton cancelLoginButton = DesignUtils.createButton("Cancel");
   cancelLoginButton.addActionListener(new ActionListener() {
 
     @Override
