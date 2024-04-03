@@ -69,6 +69,11 @@ public class Database {
         }
 
     }
+    
+    public Connection getConnection()
+    {
+    	return connection;
+    }
 
     public boolean verifyAccount(LoginData data)
     {
@@ -86,7 +91,7 @@ public class Database {
             statement = connection.createStatement();
 
             // Run the query.
-            results = statement.executeQuery("SELECT COUNT(*) FROM user WHERE username='" + data.getUsername() + "' AND password=AES_ENCRYPT('" + data.getPassword() + "', '" + key + "');");
+            results = statement.executeQuery("SELECT COUNT(*) FROM uno_user WHERE username='" + data.getUsername() + "' AND password='" + data.getPassword() + "';");
 
             // Seek to the first record.
             results.next();
@@ -135,7 +140,7 @@ public class Database {
             statement = connection.createStatement();
 
             // Execute the insert statement.
-            statement.execute("INSERT INTO user VALUES('" + data.getUsername() + "', AES_ENCRYPT('" + data.getPassword() + "', '" + key + "'));");
+            statement.execute("INSERT INTO uno_user VALUES('" + data.getUsername() + "', '" + data.getPassword() + "');");
 
         }
         catch (SQLException exception)
