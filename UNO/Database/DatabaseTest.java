@@ -69,9 +69,11 @@ public class DatabaseTest {
 	public void createAccountSuccess()
 	{
 		
+		// This test ensures that accounts can be created.
+		
 		// Declare variables.
-		CreateUserAccount data = new CreateUserAccount();
-		String username = "NewUser";
+		CreateAccountData data = new CreateAccountData();
+		String username = "Admin11";
 		String password = "Password11";
 		boolean result = false;
 		
@@ -83,6 +85,34 @@ public class DatabaseTest {
 		result = database.createAccount(data);
 		
 		assertEquals("Failed: Unable to create user account. Ensure that the database does not already have a user with these credentials.", result, true);
+		
+	}
+	
+	@Test
+	public void ensureAccountAdded()
+	{
+		
+		// This test ensures that an account can be added to the database and read from the database.
+		
+		// Local variables.
+		String username = "Admin12";
+		String password = "Password12";
+		CreateAccountData data = new CreateAccountData();
+		LoginData login = new LoginData(username, password);
+		
+		// Load the account data into the 'data' object.
+		data.setUsername(username);
+		data.setPassword(password);
+		
+		if (!database.createAccount(data))
+		{
+			
+			// The test fails due to account creation.
+			fail("Failed: Unable to create account, ensure that the account does not already exist within the database.");
+			
+		}
+		
+		assertEquals("Failed: Unable to verify account recently created.", database.verifyAccount(login), true);
 		
 	}
 	

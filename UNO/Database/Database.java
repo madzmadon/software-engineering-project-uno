@@ -114,7 +114,7 @@ public class Database {
 
     }
 
-    public boolean createAccount(CreateUserAccount data)
+    public boolean createAccount(CreateAccountData data)
     {
 
         // Declare local variables.
