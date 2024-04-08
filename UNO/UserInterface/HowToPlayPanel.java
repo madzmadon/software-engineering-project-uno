@@ -24,7 +24,40 @@ public class HowToPlayPanel extends JPanel {
       JButton returnButton = DesignUtils.createButton("Return to Start Menu");
             
       // Define the rulesTextArea's components and properties.
-      String  rules = "UNO is a card game played by 2-6 people. A round of UNO consists of playing matching colors and/or numbers to a faceup discard pile in order to get rid of the cards in players’ hands. Players place one card (either a numbered or special card) each on top of the discard pile. Special cards include “Draw Two,” “Reverse,” “Skip,”  “Wild,” and “Wild Draw Four.” If players don’t have a match for the current card at the top of the discard pile, they draw a card, and make a play legal card, if possible. Points will be tracked by the value of the hand of each losing player, with the sum of the points going to the winner. Players win a round by getting rid of all their cards. Importantly, a player must first announce 'UNO!' if he or she has a single card; a penalty can be applied by the other players as long as they notice that the player who did not make the announcement does not do so within a period of ??? seconds. The first player to reach a target number of points defined by the host wins the overall game. Point totals can range from 200 to 600.\r\n";
+String rules = getGameRules();
+ private String getGameRules() {
+    	String rules = 
+    		    "UNO Rules\n\n" +
+    		    
+    		    "Overview" +
+    		    "- UNO is a card game played by 2-6 people.\n" +
+    		    "- The objective is to get rid of all the cards in your hand.\n" +
+    		    "- Players win a round by being the first to discard all their cards.\n" +
+    		    "- The first player to reach a target number of points (defined by the host, ranging from 200 to 600) wins the overall game.\n\n" +
+    		    
+    		    "Gameplay\n" +
+    		    "1. Players place one card (either a numbered or special card) each on top of the discard pile.\n" +
+    		    "2. Cards played must match the current card at the top of the discard pile either by color or number.\n" +
+    		    "3. If players don't have a match, they must draw a card and play a legal card, if possible.\n\n" +
+    		    
+    		    "Special Cards\n" +
+    		    "- \"Draw Two\": The next player must draw two cards and skip their turn.\n" +
+    		    "- \"Reverse\": The direction of play is reversed.\n" +
+    		    "- \"Skip\": The next player is skipped.\n" +
+    		    "- \"Wild\": The player can choose the color that continues play.\n" +
+    		    "- \"Wild Draw Four\": The next player must draw four cards, and the current player chooses the color that continues play.\n\n" +
+    		    
+    		    "UNO Call\n" +
+    		    "- When a player has only one card remaining, they must announce \"UNO!\"\n" +
+    		    "- If a player fails to announce \"UNO\" and is caught by another player, they must draw multiple penalty cards.\n\n" +
+    		    
+    		    "Scoring\n" +
+    		    "- Points are tracked by the value of the cards in each losing player's hand at the end of a round.\n" +
+    		    "- The sum of these points is awarded to the winner of the round.";
+
+        return (rules);
+    }
+  
       Font font = new Font("Times New Roman", Font.PLAIN, 23);
       JTextArea rulesTextArea = new JTextArea(10, 5);
       rulesTextArea.setBackground(Color.decode("#1E2448")); // Set the background color of the JLabel
