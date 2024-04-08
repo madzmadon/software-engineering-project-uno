@@ -1,10 +1,11 @@
 package ClientCommunication;
 
 public class LoginControl {
+    private Client client;
+    private String username;
+    private String password;
 
-<<<<<<< Updated upstream
-=======
-    // Constructor
+    
     public LoginControl(Client client, String username, String password) {
         this.client = client;
         this.username = username;
@@ -17,5 +18,5 @@ public class LoginControl {
         return client.receiveLoginResponse();
     }
 
->>>>>>> Stashed changes
 }
+
