@@ -79,7 +79,7 @@ public class Database {
     {
 
         // Declare local variables.
-        Statement statement = null;
+        PreparedStatement statement = null;
         ResultSet results = null;
         boolean flag = false;
 
@@ -88,11 +88,15 @@ public class Database {
         {
 
             // Create the statement from the connection.
-            statement = connection.createStatement();
+            statement = connection.prepareStatement("SELECT COUNT(*) FROM uno_user WHERE username=? AND password=?");
 
-            // Run the query.
-            results = statement.executeQuery("SELECT COUNT(*) FROM uno_user WHERE username='" + data.getUsername() + "' AND password='" + data.getPassword() + "';");
-
+            // Add the username and password to the query.
+            statement.setString(1, data.getUsername());
+            statement.setString(2, data.getPassword());
+            
+            // Execute the query.
+            results = statement.executeQuery();
+            
             // Seek to the first record.
             results.next();
 
@@ -108,6 +112,37 @@ public class Database {
 
             return false;
 
+        } finally
+        {
+        	
+        	// Attempt to close the connections.
+        	try
+        	{
+        		
+        		// Ensure that the results and statement objects exist.
+        		if (results != null)
+        		{
+        			
+        			// Close the results object.
+        			results.close();
+        			
+        		}
+        		if (statement != null)
+        		{
+        			
+        			// Close the statement object.
+        			statement.close();
+        			
+        		}
+        		
+        	} catch (SQLException exception)
+        	{
+        		
+        		// Display the error message to the user.
+        		exception.printStackTrace();
+        		
+        	}
+        	
         }
 
         return flag;
@@ -118,18 +153,18 @@ public class Database {
     {
 
         // Declare local variables.
-        Statement statement = null;
+        PreparedStatement statement = null;
 
         // Ensure that the login data is of valid length.
         if (data.getUsername().isEmpty() || data.getPassword().isEmpty())
         {
-            return false;
+            return true;
         }
 
         // Ensure that there is not an already existent account with the same login data.
         if (this.verifyAccount(new LoginData(data.getUsername(), data.getPassword())))
         {
-            return false;
+            return true;
         }
 
         // Attempt to create the account with the data.
@@ -137,11 +172,15 @@ public class Database {
         {
 
             // Create the statement from the connection.
-            statement = connection.createStatement();
+            statement = connection.prepareStatement("INSERT INTO uno_user VALUES(?, ?);");
 
+            // Add the username and password to the statement.
+            statement.setString(1, data.getUsername());
+            statement.setString(2, data.getPassword());
+            
             // Execute the insert statement.
-            statement.execute("INSERT INTO uno_user VALUES('" + data.getUsername() + "', '" + data.getPassword() + "');");
-
+            statement.execute(); 
+            
         }
         catch (SQLException exception)
         {
