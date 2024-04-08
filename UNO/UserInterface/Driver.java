@@ -43,7 +43,7 @@ public class Driver extends JFrame {
         cardPanel.add(createAccountPanel, "CreateAccountPanel");
         cardPanel.add(loginPanel, "LoginPanel");
         cardPanel.add(howToPlayPanel, "HowToPlayPanel");
-        
+        cardPanel.add(gameManagerPanel, "GameManagerPanel");
         
         // Initially show the StartUpPanel
         showPanel("StartUpPanel");
