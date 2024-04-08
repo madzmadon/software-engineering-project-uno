@@ -37,8 +37,7 @@ public class GameManagerPanel extends JPanel {
         joinGameButton.setMaximumSize(buttonSize);
         howToPlayButton.setMaximumSize(buttonSize);
         logoutButton.setMaximumSize(buttonSize);
-        //JButton accessRulesButton = DesignUtils.createButton("How to Play");
-        
+       
         
         //Action listener for accessRulesButton
         howToPlayButton.addActionListener(e -> driver.showPanel("HowToPlayPanel"));

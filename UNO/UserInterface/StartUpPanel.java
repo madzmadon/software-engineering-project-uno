@@ -29,20 +29,15 @@ public class StartUpPanel extends JPanel {
         JButton loginButton = DesignUtils.createSpecialButton("Login");
         JButton createAccountButton = DesignUtils.createButton("Create Account");
         
-        
         // Add action listeners to the buttons
         loginButton.addActionListener(e -> driver.showPanel("LoginPanel"));
         createAccountButton.addActionListener(e -> driver.showPanel("CreateAccountPanel"));
-        
-        
+               
         // Set maximum size for buttons to ensure uniformity
         Dimension buttonSize = new Dimension(300, 70);
         loginButton.setMaximumSize(new Dimension(buttonSize));
         createAccountButton.setMaximumSize(new Dimension(buttonSize));
-        
-      
-        
-        
+                
         // Create a JPanel for the buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
@@ -50,15 +45,12 @@ public class StartUpPanel extends JPanel {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Add buttons to the buttonPanel
-                 
         buttonPanel.add(Box.createVerticalGlue());
         buttonPanel.add(loginButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         buttonPanel.add(createAccountButton);
         buttonPanel.add(Box.createVerticalGlue());
-        
-       
-        
+                
         // Add the buttonPanel to the center of StartUpPanel
         add(buttonPanel, BorderLayout.CENTER);
 
