@@ -83,6 +83,14 @@ public class Database {
         ResultSet results = null;
         boolean flag = false;
 
+        // Verify the username and password.
+        if (!this.verifyCredentials(data.getUsername(), data.getPassword()))
+        {
+        	
+        	return false;
+        	
+        }
+        
         // Attempt to retrieve users and passwords from the database.
         try
         {
@@ -155,18 +163,18 @@ public class Database {
         // Declare local variables.
         PreparedStatement statement = null;
 
-        // Ensure that the login data is of valid length.
-        if (data.getUsername().isEmpty() || data.getPassword().isEmpty())
-        {
-            return true;
-        }
-
         // Ensure that there is not an already existent account with the same login data.
         if (this.verifyAccount(new LoginData(data.getUsername(), data.getPassword())))
         {
-            return true;
+        	return false;
         }
-
+        
+        // Verify the username and password.
+        if (!this.verifyCredentials(data.getUsername(), data.getPassword()))
+        {
+        	return false;
+        }
+        
         // Attempt to create the account with the data.
         try
         {
@@ -196,4 +204,9 @@ public class Database {
 
     }
 
+    private boolean verifyCredentials(String username, String password)
+    {
+    	return ((!username.isEmpty() && !password.isEmpty()) && (username.length() <= 32 && password.length() <= 16));
+    }
+    
 }

@@ -2,6 +2,8 @@ package Database;
 
 import static org.junit.Assert.*;
 
+import java.sql.SQLException;
+
 import org.junit.*;
 
 public class DatabaseTest {
@@ -104,6 +106,7 @@ public class DatabaseTest {
 		data.setUsername(username);
 		data.setPassword(password);
 		
+		// Attempt to create the account.
 		if (!database.createAccount(data))
 		{
 			
@@ -113,6 +116,74 @@ public class DatabaseTest {
 		}
 		
 		assertEquals("Failed: Unable to verify account recently created.", database.verifyAccount(login), true);
+		
+	}
+	
+	@Test
+	public void usernameOverflowCreateAccount()
+	{
+		
+		// This test ensures that the database will return false if the username exceeds the 32 character limit.
+		
+		// Declare local variables.
+		String username = "UsernameThatExceedsTheMaximumSize";
+		String password = "Password";
+		CreateAccountData data = new CreateAccountData();
+		
+		// Load the data.
+		data.setUsername(username);
+		data.setPassword(password);
+		
+		assertEquals("Failed: Username exceeds limit, expected false.", database.createAccount(data), false);
+		
+	}
+	
+	@Test
+	public void passwordOverflowCreateAccount()
+	{
+		
+		// This test ensures that the database will return false if the password exceeds 16 characters.
+		
+		// Declare local variables.
+		String username = "Admin13";
+		String password = "PasswordThatIsTooLong";
+		CreateAccountData data = new CreateAccountData();
+		
+		// Load the data.
+		data.setUsername(username);
+		data.setPassword(password);
+		
+		assertEquals("Failed: Password exceeds limit, expected false.", database.createAccount(data), false);
+		
+	}
+	
+	@Test
+	public void usernameOverflowLogin()
+	{
+		
+		// This test ensures that the database will return false if the username exceeds the limit of 32 characters.
+		
+		// Declare local variables.
+		String username = "UsernameThatExceedsTheMaximumSize";
+		String password = "Password";
+		LoginData data = new LoginData(username, password);
+		
+		assertEquals("Failed: Username exceeds limit, expected false.", database.verifyAccount(data), false);
+		
+	}
+	
+	@Test
+	public void passwordOverflowLogin()
+	{
+		
+		// This test ensures that the database will return false if the password exceeds the limit of 16 characters.
+		
+		// Declare local variables.
+		String username = "Admin13";
+		String password = "PasswordThatIsTooLong";
+		LoginData data = new LoginData(username, password);
+		
+		assertEquals("Failed: Password exceeds limit, expected false.", database.verifyAccount(data), false);
 		
 	}
 	
