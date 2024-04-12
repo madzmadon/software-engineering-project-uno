@@ -6,7 +6,6 @@ public class CreateAccountControl {
     private String password;
     private String email;
 
-    
     public CreateAccountControl(Client client, String username, String password, String email) {
         this.client = client;
         this.username = username;
@@ -14,34 +13,21 @@ public class CreateAccountControl {
         this.email = email;
     }
 
-    
     public boolean createAccount() {
         if (!validateInput()) {
             System.out.println("Validation failed. Please check your input and try again.");
             return false;
         }
 
-        
-        Object accountCreationRequest = constructAccountRequest();
-
-        
-        client.sendRequest(accountCreationRequest);
-
-        
+        CreateAccountData data = new CreateAccountData(username, password, email);
+        client.sendRequest(data);
         boolean creationSuccessful = client.receiveAccountCreationResponse();
-
-       
         handleAccountCreationResponse(creationSuccessful);
-
         return creationSuccessful;
     }
 
     private boolean validateInput() {
         return !username.isEmpty() && !password.isEmpty() && email.contains("@");
-    }
-
-    private Object constructAccountRequest() {
-        return new String[]{"CREATE_ACCOUNT", username, password, email};
     }
 
     private void handleAccountCreationResponse(boolean success) {
