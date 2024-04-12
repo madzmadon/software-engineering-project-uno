@@ -10,7 +10,7 @@ public class CreateAccountPanel extends JPanel {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
-
+       
     public CreateAccountPanel(Driver driver) {
         // Set preferred size to 1000x800
         setPreferredSize(new Dimension(1000, 800));
