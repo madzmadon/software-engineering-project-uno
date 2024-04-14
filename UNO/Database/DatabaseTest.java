@@ -118,7 +118,7 @@ public class DatabaseTest {
 		assertEquals("Failed: Unable to verify account recently created.", database.verifyAccount(login), true);
 		
 	}
-	
+  
 	@Test
 	public void usernameOverflowCreateAccount()
 	{
