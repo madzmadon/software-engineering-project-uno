@@ -56,8 +56,8 @@ public class GameLobbyPanel extends JPanel{
     Dimension buttonSize = new Dimension(300, 70);
          
     //Action listener for accessRulesButton (show GameSessionPanel for now)
-    startGameButton.addActionListener(e -> driver.showPanel("GameSessionPanel"));
-    
+    startGameSessionButton.addActionListener(e -> driver.showPanel("GameSessionPanel"));
+     
     // Create a JPanel for the buttons
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
