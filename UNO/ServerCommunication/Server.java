@@ -1,3 +1,14 @@
+package ServerCommunication;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import ClientCommunication.GameControl;
+import ClientCommunication.GameSessionControl;
+
 public class Server {
     // Constants
     private static final int PORT = 12345;
@@ -13,8 +24,7 @@ public class Server {
     // Method to start the server
     public void startServer() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("UnoServer is running and waiting for
-clients...");
+            System.out.println("Uno server is running and waiting for clients...");
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
@@ -35,7 +45,7 @@ clients...");
 
     // Method to find a game by its ID
     public GameControl findGameById(int gameId) {
-        return games.stream().filter(g -> g.getId() ==
+        return games.stream().filter(g -> g.getGameId() ==
 gameId).findFirst().orElse(null);
     }
 

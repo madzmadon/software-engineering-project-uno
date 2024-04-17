@@ -18,9 +18,9 @@ public class ClientHandler<GameSessionControl, String, GameSessionData> implemen
     private GameSessionControl gameSessionControl; // Should be declared as volatile if accessed by multiple threads
     private GameSessionData gameSessionData; // Should be declared as volatile if accessed by multiple threads
 
-    public ClientHandler(Socket socket, Server server) {
+    public ClientHandler(Socket socket, UnoServerControl unoServerControl) {
         this.clientSocket = socket;
-        this.server = server;
+        this.server = unoServerControl;
         try {
             this.input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             this.output = new PrintWriter(clientSocket.getOutputStream(), true);

@@ -37,14 +37,20 @@ public class Driver extends JFrame {
         //Create an instance of HowToPlayPanel
         HowToPlayPanel howToPlayPanel = new HowToPlayPanel(this);
         
+        //Create an instance of GameLobbyPanel
+        GameLobbyPanel gameLobbyPanel = new GameLobbyPanel(this);
+        
+        //Create an instance of GameLobbyPanel
+        GameSessionPanel gameSessionPanel = new GameSessionPanel(this);
+        
         // Add panels to the card panel
         cardPanel.add(startUpPanel, "StartUpPanel");
         cardPanel.add(gameManagerPanel, "GameManagerPanel");
         cardPanel.add(createAccountPanel, "CreateAccountPanel");
         cardPanel.add(loginPanel, "LoginPanel");
-
         cardPanel.add(howToPlayPanel, "HowToPlayPanel");
-        cardPanel.add(gameManagerPanel, "GameManagerPanel");
+        cardPanel.add(gameLobbyPanel, "GameLobbyPanel");
+        cardPanel.add(gameSessionPanel, "GameSessionPanel");
 
         
         // Initially show the StartUpPanel

@@ -95,4 +95,5 @@ public class DesignUtils {
         label.setForeground(Color.WHITE);
         return label;
     }
+   
 }
