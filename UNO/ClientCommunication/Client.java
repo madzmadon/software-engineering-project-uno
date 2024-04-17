@@ -1,69 +1,72 @@
 package ClientCommunication;
 
-import java.io.IOException;
-import ocsf.client.AbstractClient;
+import GameLogic.Card;
+import GameLogic.GameLogic;
+import GameLogic.Player;
+import ServerCommunication.Server;
 
-public class Client extends AbstractClient {
+public class Client {
+    private Server serverCommunication;
+    private GameLogic gameLogic;
 
-    public Client(String host, int port) {
-        super(host, port);
+    public Client(Server serverCommunication, GameLogic gameLogic) {
+        this.serverCommunication = serverCommunication;
+        this.gameLogic = gameLogic;
     }
 
-    @Override
-    protected void handleMessageFromServer(Object msg) {
-        // Process message received from the server
-        System.out.println("Received from server: " + msg);
-        handleResponse(msg);
+    public void sendLoginRequest(String username, String password) {
+        serverCommunication.handleLoginRequest(username, password);
     }
 
-    @Override
-    protected void connectionEstablished() {
-        // Called when a connection to the server has been established
-        System.out.println("Connection established with the server.");
+    public void sendCreateAccountRequest(String username, String password) {
+        serverCommunication.handleCreateAccountRequest(username, password);
     }
 
-    @Override
-    protected void connectionClosed() {
-        // Called when the connection to the server is closed
-        System.out.println("Connection closed.");
+    public void sendStartGameRequest() {
+        gameLogic.startGame();
+        serverCommunication.handleStartGameRequest(gameLogic);
     }
 
-    public void sendRequest(Object request) {
-        // Send a request to the server
-        try {
-            sendToServer(request);
-        } catch (IOException e) {
-            System.err.println("Error sending request to server: " + e.getMessage());
-            e.printStackTrace();
+    public void sendJoinGameRequest() {
+        Player player = gameLogic.addPlayer(new Player());
+        serverCommunication.handleJoinGameRequest(gameLogic, player);
+    }
+
+    public void sendShowHowToPlayRequest() {
+        serverCommunication.handleShowHowToPlayRequest(gameLogic);
+    }
+
+    public void sendLogoutRequest() {
+        gameLogic.removePlayer(gameLogic.getCurrentPlayer());
+        serverCommunication.handleLogoutRequest(gameLogic);
+    }
+
+    public void sendPlayCardRequest(Card card) {
+        if (gameLogic.playCard(gameLogic.getCurrentPlayer(), card)) {
+            serverCommunication.handlePlayCardRequest(gameLogic, card);
         }
     }
 
-    private void handleResponse(Object response) {
-        // Handle responses from the server here
-        // This method now serves as a router to process different kinds of responses
-        System.out.println("Handling server response: " + response);
-        // You can extend this method to handle different types of responses differently
+    public void sendDrawCardRequest() {
+        gameLogic.drawCard(gameLogic.getCurrentPlayer());
+        serverCommunication.handleDrawCardRequest(gameLogic);
     }
 
-    // Your simulation methods would now be redundant since you'd be receiving real responses
-    // You can replace the following methods with real implementations
-    public boolean receiveLoginResponse() {
-        // This should be processed dynamically with actual server responses
-        return true;
+    public void sendUnoCallRequest() {
+        serverCommunication.handleUnoCallRequest(gameLogic);
     }
 
-    public boolean receiveAccountCreationResponse() {
-        // This should be processed dynamically with actual server responses
-        return true; 
+    public void sendForfeitRequest() {
+        gameLogic.removePlayer(gameLogic.getCurrentPlayer());
+        serverCommunication.handleForfeitRequest(gameLogic);
     }
 
-    public Object receiveGameState() {
-        // This should be updated dynamically from the server messages
-        return "Game state updated";
+    public void sendStartGameSessionRequest() {
+        serverCommunication.handleStartGameSessionRequest(gameLogic);
     }
 
-    public Object receiveLobbyStatus() {
-        // This should be updated dynamically from the server messages
-        return "Lobby status updated";
+    public void sendLeaveGameSessionRequest() {
+        gameLogic.removePlayer(gameLogic.getCurrentPlayer());
+        serverCommunication.handleLeaveGameSessionRequest(gameLogic);
     }
 }

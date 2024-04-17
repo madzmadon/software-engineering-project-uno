@@ -1,1 +1,7 @@
-
+/ClientCommunication/
+/GameLogic/
+/ServerCommunication/
+/UserInterface/
+/mysql-connector-java-5.1.40-bin.jar
+/ocsf.jar
+/Database/

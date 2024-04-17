@@ -1,40 +1,19 @@
 package ClientCommunication;
 
+import Database.CreateAccountData;
+
 public class CreateAccountControl {
-    private Client client;
     private String username;
     private String password;
-    private String email;
+    private Client client;
 
-    public CreateAccountControl(Client client, String username, String password, String email) {
-        this.client = client;
+    public CreateAccountControl(String username, String password, Client client) {
         this.username = username;
         this.password = password;
-        this.email = email;
+        this.client = client;
     }
 
-    public boolean createAccount() {
-        if (!validateInput()) {
-            System.out.println("Validation failed. Please check your input and try again.");
-            return false;
-        }
-
-        CreateAccountData data = new CreateAccountData(username, password, email);
-        client.sendRequest(data);
-        boolean creationSuccessful = client.receiveAccountCreationResponse();
-        handleAccountCreationResponse(creationSuccessful);
-        return creationSuccessful;
-    }
-
-    private boolean validateInput() {
-        return !username.isEmpty() && !password.isEmpty() && email.contains("@");
-    }
-
-    private void handleAccountCreationResponse(boolean success) {
-        if (success) {
-            System.out.println("Account creation successful!");
-        } else {
-            System.out.println("Account creation failed. Please try again later.");
-        }
+    public void sendCreateAccountRequest() {
+        client.sendCreateAccountRequest(username, password);
     }
 }

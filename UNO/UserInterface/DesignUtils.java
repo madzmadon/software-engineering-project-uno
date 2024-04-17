@@ -18,6 +18,10 @@ public class DesignUtils {
         return createResizedIcon("/images/UNOLogo.png", width, height);
     }
 
+    public static ImageIcon loadCardImage(String fileName) {
+        return createResizedIcon("/images/cards/" + fileName, 100, 150);
+    }
+    
     public static JButton createButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Space Mono", Font.PLAIN, 24));

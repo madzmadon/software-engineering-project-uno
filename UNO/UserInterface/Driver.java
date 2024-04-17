@@ -6,10 +6,7 @@ import java.awt.*;
 public class Driver extends JFrame {
     private CardLayout cardLayout;
     private JPanel cardPanel;
-
-    private StartUpPanel startUpPanel;
-    private LoginPanel loginPanel;
-    
+   
     public Driver() {
         setTitle("UNO Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -20,35 +17,27 @@ public class Driver extends JFrame {
         cardPanel = new JPanel(cardLayout);
 
         // Create the StartUpPanel
-        startUpPanel = new StartUpPanel(this);
-        
-        //Create LoginPanel
-        loginPanel = new LoginPanel(this);
-        
+        StartUpPanel startUpPanel = new StartUpPanel(this);
+        cardPanel.add(startUpPanel, "StartUpPanel");
+
         // Create an instance of GameManagerPanel
         GameManagerPanel gameManagerPanel = new GameManagerPanel(this);
-        
+        cardPanel.add(gameManagerPanel, "GameManagerPanel");
+
         // Create an instance of CreateAccountPanel
         CreateAccountPanel createAccountPanel = new CreateAccountPanel(this);
-        
+        cardPanel.add(createAccountPanel, "CreateAccountPanel");
+
         //Create an instance of LoginPanel
         LoginPanel loginPanel = new LoginPanel(this);
+        cardPanel.add(loginPanel, "LoginPanel");
 
         //Create an instance of HowToPlayPanel
         HowToPlayPanel howToPlayPanel = new HowToPlayPanel(this);
-        
-        // Add panels to the card panel
-        cardPanel.add(startUpPanel, "StartUpPanel");
-        cardPanel.add(gameManagerPanel, "GameManagerPanel");
-        cardPanel.add(createAccountPanel, "CreateAccountPanel");
-        cardPanel.add(loginPanel, "LoginPanel");
-
         cardPanel.add(howToPlayPanel, "HowToPlayPanel");
-        cardPanel.add(gameManagerPanel, "GameManagerPanel");
 
-        
-        // Initially show the StartUpPanel
-        showPanel("StartUpPanel");
+        // Initially show the GameManagerPanel
+        showPanel("GameManagerPanel");
 
         // Add the card panel to the frame
         add(cardPanel);
@@ -56,7 +45,6 @@ public class Driver extends JFrame {
         pack();
         setLocationRelativeTo(null);
     }
-
     public void showPanel(String panelName) {
         cardLayout.show(cardPanel, panelName);
     }
