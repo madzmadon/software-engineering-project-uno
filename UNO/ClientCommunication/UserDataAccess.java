@@ -31,7 +31,7 @@ public class UserDataAccess {
     }
 
     public boolean validateLogin(String username, String password) {
-        // SQL query to check if a user exists with the given username and password
+        // SQL query t check if a user exists with the given username and password
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
