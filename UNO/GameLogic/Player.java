@@ -1,41 +1,89 @@
 package GameLogic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
-    private String name;
-    private List<Card> hand;
-    private int points;
+public class Player implements Serializable {
 
-    public Player(String name) {
-        this.name = name;
-        this.hand = new ArrayList<>();
-        this.points = 0;
-    }
+    private String player_name;
+    private int score;
+    private ArrayList<Card> hand;
 
-    public void drawCard(Card card) {
-        hand.add(card);
+    public Player()
+    {
+
     }
 
-    public void playCard(Card card) {
-        hand.remove(card);
-        updatePoints(card);
+    // Set the player's name.
+    public void setPlayerName(String player_name)
+    {
+        this.player_name = player_name;
     }
 
-    private void updatePoints(Card card) {
-        points += card.getPoints();
+    // Returns the player's name.
+    public String getPlayerName()
+    {
+        return player_name;
     }
 
-    public List<Card> getHand() {
-        return new ArrayList<>(hand);
+    // Sets the score of the player.
+    public void setScore(int score)
+    {
+        this.score = score;
     }
 
-    public int getPoints() {
-        return points;
+    // Returns the score of the player.
+    public int getScore()
+    {
+        return score;
     }
-    
-    public String getName() {
-        return name;
+
+    // Utility method to reset the cards within the player's hand.
+    public void emptyHand()
+    {
+
+        // Iterate over every card within the player's hand.
+        for (Card card : hand)
+        {
+
+            // Remove the current card from the player's hand.
+            this.hand.remove(card);
+
+        }
+
     }
+
+    // Returns the cards within the player's hand.
+    public List<Card> getHand()
+    {
+        return hand;
+    }
+
+    // Sets the hand of the player.
+    public void setHand(ArrayList<Card> hand)
+    {
+        this.hand = hand;
+    }
+
+    // Sums the points of every card within the player's hand.
+    public int getSumOfCards()
+    {
+
+        // Declare local variables.
+        int sum = 0;
+
+        // Iterate over every card within the hand.
+        for (Card card : this.hand)
+        {
+
+            // Add the point value for the current card to 'sum'.
+            sum += card.getPointValue();
+
+        }
+
+        return sum;
+
+    }
+
 }
