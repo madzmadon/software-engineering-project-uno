@@ -90,9 +90,9 @@ public LoginPanel(Driver driver)
       {
         JOptionPane.showMessageDialog(null, "You must enter a username and password!", "Error!", JOptionPane.ERROR_MESSAGE);
       }
-      //Display the GameLobbyPanel if credentials match an existing user's
+      //Display the GameManagerPanel if credentials match an existing user's
     else
-      driver.showPanel("GameLobbyPanel");
+      driver.showPanel(new GameManagerPanel(driver));
       
     }
     
@@ -107,7 +107,7 @@ public LoginPanel(Driver driver)
     public void actionPerformed(ActionEvent e)
     {
     //Return to the StartUpPanel
-       driver.showPanel("StartUpPanel");
+       driver.showPanel(new StartUpPanel(driver));
     }
     
     

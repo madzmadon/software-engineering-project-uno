@@ -2,6 +2,9 @@ package UserInterface;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 //Source for JList implementation: https://www.geeksforgeeks.org/java-swing-jlist-with-examples/
 import javax.swing.*;
 
@@ -13,7 +16,7 @@ public class GameLobbyPanel extends JPanel{
   private JList namesAndScoresJList;
   private Driver driver;
 
-  public GameLobbyPanel(Driver driver)
+  public GameLobbyPanel(Driver driver, String lobbyId)
   {
     this.driver=driver;
 
@@ -56,7 +59,18 @@ public class GameLobbyPanel extends JPanel{
     Dimension buttonSize = new Dimension(300, 70);
 
     //Action listener for accessRulesButton (show GameSessionPanel for now)
-    startGameSessionButton.addActionListener(e -> driver.showPanel("GameSessionPanel"));
+    startGameSessionButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            driver.showPanel(new GameSessionPanel(driver, lobbyId));
+        }
+    });
+    startGameSessionButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            driver.showPanel(new GameSessionPanel(driver, lobbyId));
+        }
+    });
 
     // Create a JPanel for the buttons
     JPanel buttonPanel = new JPanel();

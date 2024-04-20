@@ -1,8 +1,11 @@
 package UserInterface;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -10,7 +13,13 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import ClientCommunication.GameSessionControl;
+import GameLogic.Player;
+import GameLogic.Card;
+import ClientCommunication.Client;
+
 public class GameSessionPanel extends JPanel {
+	private GameSessionControl gameSessionControl;
     private JLabel player1Label;
     private JLabel player2Label;
     private JLabel player3Label;
@@ -21,7 +30,10 @@ public class GameSessionPanel extends JPanel {
     private JButton discardButton;
     private JButton unoButton;
 
-    public GameSessionPanel(Driver driver) {
+    public GameSessionPanel(Driver driver, String lobbyId) {
+        Client client = driver.getClient(); // Assuming a getClient() method exists in the Driver class
+        gameSessionControl = new GameSessionControl(client, lobbyId);
+        
         setPreferredSize(new Dimension(1000, 800));
         setLayout(new BorderLayout());
         setBackground(Color.decode("#1E2448"));
@@ -95,8 +107,44 @@ public class GameSessionPanel extends JPanel {
         add(bottomPlayerPanel, BorderLayout.SOUTH);
         add(drawDiscardPanel, BorderLayout.CENTER);
         add(unoPanel, BorderLayout.SOUTH);
-    }
+    
 
+        drawButton.addActionListener(e -> {
+            Card drawnCard = gameSessionControl.drawCard(); // Simulate drawing a card
+            Player currentPlayer = gameSessionControl.getCurrentPlayer();
+            currentPlayer.drawCard(drawnCard); // Add the drawn card to the current player's hand
+            // Update the UI to reflect the changes
+        });
+
+
+        discardButton.addActionListener(e -> {
+            Player currentPlayer = gameSessionControl.getCurrentPlayer();
+            List<Card> hand = currentPlayer.getHand(); // Get the current player's hand
+            // Here you would implement a way for the player to select a card from their hand
+            // For demonstration purposes, let's assume the first card in hand is selected
+            if (!hand.isEmpty()) {
+                Card selectedCard = hand.get(0); // Select the first card in hand (you may implement a selection mechanism)
+                gameSessionControl.playCard(currentPlayer, selectedCard); // Discard the selected card
+                // Update the UI to reflect the changes (optional)
+            } else {
+                // Handle error: No cards in hand to discard
+                System.out.println("Error: No cards in hand to discard for " + currentPlayer.getName());
+            }
+        });
+
+
+        unoButton.addActionListener(e -> {
+            Player currentPlayer = gameSessionControl.getCurrentPlayer();
+            if (currentPlayer.getHand().size() == 1) {
+                gameSessionControl.callUno(currentPlayer); // Call UNO
+                // Handle the UNO call (e.g., update UI, apply penalties if needed)
+            } else {
+                // Handle error: Player cannot call UNO because they have more than one card in hand
+                System.out.println(currentPlayer.getName() + " cannot call UNO because they have more than one card in hand.");
+            }
+        });
+
+    }
     private JPanel createPlayerPanel(String playerName) {
         JPanel playerPanel = new JPanel();
         playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.Y_AXIS));

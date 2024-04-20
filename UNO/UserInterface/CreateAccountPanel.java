@@ -1,17 +1,25 @@
 package UserInterface;
 
 import javax.swing.*;
+
+import ClientCommunication.Client;
+import ClientCommunication.CreateAccountControl;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class CreateAccountPanel extends JPanel {
     private JTextField usernameField;
-    private JTextField emailField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
-
+    private CreateAccountControl createAccountControl;
+    
     public CreateAccountPanel(Driver driver) {
+    	
+    	Client client = driver.getClient();
+        createAccountControl = new CreateAccountControl(client);
+        
         // Set preferred size to 1000x800
         setPreferredSize(new Dimension(1000, 800));
 
@@ -29,7 +37,6 @@ public class CreateAccountPanel extends JPanel {
 
         // Create form fields
         usernameField = DesignUtils.createTextField();
-        emailField = DesignUtils.createTextField();
         passwordField = DesignUtils.createPasswordField();
         confirmPasswordField = DesignUtils.createPasswordField();
 
@@ -37,8 +44,6 @@ public class CreateAccountPanel extends JPanel {
         formPanel.add(DesignUtils.createLabel("Username:"));
         formPanel.add(usernameField);
         formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        formPanel.add(DesignUtils.createLabel("Email:"));
-        formPanel.add(emailField);
         formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         formPanel.add(DesignUtils.createLabel("Password:"));
         formPanel.add(passwordField);
@@ -57,7 +62,7 @@ public class CreateAccountPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Return to the StartUpPanel
-                driver.showPanel("StartUpPanel");
+                driver.showPanel(new StartUpPanel(driver));
             }
         });
 
@@ -66,26 +71,30 @@ public class CreateAccountPanel extends JPanel {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Handle form submission here
                 String username = usernameField.getText();
-                String email = emailField.getText();
                 String password = new String(passwordField.getPassword());
                 String confirmPassword = new String(confirmPasswordField.getPassword());
 
                 if (!password.equals(confirmPassword)) {
                     JOptionPane.showMessageDialog(null, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    // Validate and create the account
-                    // Perform the necessary validation and account creation
-                    // For now, let's display a success message
-                    JOptionPane.showMessageDialog(null, "Account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    // Update the CreateAccountControl instance with the user-entered values
+                    createAccountControl.setUsername(username);
+                    createAccountControl.setPassword(password);
 
-                    // Return to the StartUpPanel
-                    driver.showPanel("StartUpPanel");
+                    // Call the createAccount method of CreateAccountControl
+                    boolean creationSuccessful = createAccountControl.createAccount();
+
+                    if (creationSuccessful) {
+                        JOptionPane.showMessageDialog(null, "Account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        driver.showPanel(new StartUpPanel(driver));
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Account creation failed. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         });
-
+        
         // Add buttons to the buttons panel
         buttonsPanel.add(cancelButton);
         buttonsPanel.add(Box.createRigidArea(new Dimension(20, 0)));
