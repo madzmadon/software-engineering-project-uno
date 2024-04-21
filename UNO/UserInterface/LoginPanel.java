@@ -1,5 +1,7 @@
 package UserInterface;
 
+import ClientCommunication.Client;
+import ClientCommunication.LoginControl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,11 +11,14 @@ import java.awt.event.ActionListener;
 
 public class LoginPanel extends JPanel{
 
-  
+private LoginControl loginControl;  
 private JTextField usernameField;
 private JTextField passwordField;
 private JLabel errorLabel;
 private Driver driver;
+
+
+
 
 public String getUsername()
 {
@@ -32,10 +37,15 @@ public void setError(String error)
   
 }
 
-public LoginPanel(Driver driver) 
+
+public LoginPanel(Driver driver, String username, String password) 
 {
-  this.driver=driver;
   
+  this.driver=driver;
+  Client client = driver.getClient(); 
+  loginControl = new LoginControl(client, username, password);
+  
+
   //Set preferred size for LoginPanel to 1000 X 800
     setPreferredSize(new Dimension (1000, 800));
     
@@ -85,8 +95,9 @@ public LoginPanel(Driver driver)
       String username = usernameField.getText();
       String userPassword = passwordField.getText();
       
-      
-      if (userPassword.equals("") || username.equals(""))
+      loginControl.login();
+
+      if (!loginControl.login())
       {
         JOptionPane.showMessageDialog(null, "You must enter a username and password!", "Error!", JOptionPane.ERROR_MESSAGE);
       }
