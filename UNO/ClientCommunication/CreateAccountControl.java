@@ -1,16 +1,22 @@
 package ClientCommunication;
 
+import Database.CreateAccountData;
+
 public class CreateAccountControl {
     private Client client;
     private String username;
     private String password;
-    private String email;
 
-    public CreateAccountControl(Client client, String username, String password, String email) {
+    public CreateAccountControl(Client client) {
         this.client = client;
+    }
+
+    public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
-        this.email = email;
     }
 
     public boolean createAccount() {
@@ -19,7 +25,10 @@ public class CreateAccountControl {
             return false;
         }
 
-        CreateAccountData data = new CreateAccountData(username, password, email);
+        CreateAccountData data = new CreateAccountData();
+        data.setUsername(username);
+        data.setPassword(password);
+
         client.sendRequest(data);
         boolean creationSuccessful = client.receiveAccountCreationResponse();
         handleAccountCreationResponse(creationSuccessful);
@@ -27,7 +36,7 @@ public class CreateAccountControl {
     }
 
     private boolean validateInput() {
-        return !username.isEmpty() && !password.isEmpty() && email.contains("@");
+        return !username.isEmpty() && !password.isEmpty();
     }
 
     private void handleAccountCreationResponse(boolean success) {

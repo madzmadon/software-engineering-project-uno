@@ -30,8 +30,8 @@ public class StartUpPanel extends JPanel {
         JButton createAccountButton = DesignUtils.createButton("Create Account");
      
         // Add action listeners to the buttons
-        loginButton.addActionListener(e -> driver.showPanel("LoginPanel"));
-        createAccountButton.addActionListener(e -> driver.showPanel("CreateAccountPanel"));
+        loginButton.addActionListener(e -> driver.showPanel(new LoginPanel(driver)));
+        createAccountButton.addActionListener(e -> driver.showPanel(new CreateAccountPanel(driver)));
           
         // Set maximum size for buttons to ensure uniformity
         Dimension buttonSize = new Dimension(300, 70);

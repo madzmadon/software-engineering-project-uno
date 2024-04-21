@@ -3,16 +3,23 @@ package ClientCommunication;
 import java.util.ArrayList;
 import java.util.List;
 
+import GameLogic.Deck;
+import GameLogic.Player;
+import GameLogic.Card;
+
 public class GameSessionControl {
     private Client client;
     private String lobbyId;
     private List<Player> players = new ArrayList<>();
     private int currentPlayerIndex = 0;
     private List<Card> discardPile = new ArrayList<>();
+    private Deck deck;
 
     public GameSessionControl(Client client, String lobbyId) {
         this.client = client;
         this.lobbyId = lobbyId;
+        this.deck = new Deck(); // Initialize the deck
+        deck.shuffle(); // Shuffle the deck
     }
 
     public void addPlayer(Player player) {
@@ -32,15 +39,24 @@ public class GameSessionControl {
     }
 
     public boolean isValidMove(Card card) {
+        if (discardPile.isEmpty()) {
+            return true; // First card can be played
+        }
+
         Card topCard = discardPile.get(discardPile.size() - 1);
-        return card.getColor().equals(topCard.getColor()) || card.getValue().equals(topCard.getValue());
+        return card.getColor() == topCard.getColor() || card.getSymbol().equals(topCard.getSymbol());
     }
 
     public void playCard(Player player, Card card) {
         if (isValidMove(card)) {
-            player.removeCard(card);
-            discardPile.add(card);
-            nextTurn();
+            boolean removed = player.playCard(card);
+            if (removed) {
+                discardPile.add(card);
+                nextTurn();
+            } else {
+                // Handle error: Card not found in player's hand
+                System.out.println("Error: " + player.getName() + " does not have the card " + card.getSymbol());
+            }
         } else {
             // Handle invalid move
             System.out.println("Invalid move by " + player.getName());
@@ -48,8 +64,7 @@ public class GameSessionControl {
     }
 
     public Card drawCard() {
-        // This method needs to pull a card from a deck, which is not yet implemented
-        return new Card("Red", "5");  // Placeholder
+        return deck.drawCard();
     }
 
     public void callUno(Player player) {

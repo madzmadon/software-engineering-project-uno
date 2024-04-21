@@ -18,9 +18,9 @@ public class Player {
         hand.add(card);
     }
 
-    public void playCard(Card card) {
-        hand.remove(card);
+    public boolean playCard(Card card) {
         updatePoints(card);
+		return hand.remove(card);
     }
 
     private void updatePoints(Card card) {

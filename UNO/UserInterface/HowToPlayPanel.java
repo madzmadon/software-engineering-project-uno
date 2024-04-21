@@ -52,7 +52,7 @@ public class HowToPlayPanel extends JPanel {
       JLabel rulesTitleLabel = DesignUtils.createTitleLabel("How to Play UNO");
       
       // ActionListener for returnButton
-      returnButton.addActionListener(e -> driver.showPanel("GameManagerPanel"));
+      returnButton.addActionListener(e -> driver.showPanel(new GameManagerPanel(driver)));
              
       // Set maximum size for the button 
       Dimension buttonSize = new Dimension(300, 70);

@@ -2,6 +2,8 @@ package UserInterface;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
+
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,6 +96,18 @@ public class DesignUtils {
         label.setFont(new Font("Space Mono", Font.PLAIN, 18));
         label.setForeground(Color.WHITE);
         return label;
+    }
+    
+    public static Border createEmptyBorder(int top, int left, int bottom, int right) {
+        return BorderFactory.createEmptyBorder(top, left, bottom, right);
+    }
+    
+    public static JPanel createCardPanel() {
+        JPanel cardPanel = new JPanel();
+        cardPanel.setOpaque(false);
+        cardPanel.setPreferredSize(new Dimension(100, 140));
+        cardPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        return cardPanel;
     }
    
 }

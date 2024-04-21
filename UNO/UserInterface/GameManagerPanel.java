@@ -1,12 +1,23 @@
 package UserInterface;
 
 import javax.swing.*;
+
+import ClientCommunication.Client;
+import ClientCommunication.GameManagerControl;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 public class GameManagerPanel extends JPanel {
+	private GameManagerControl gameManagerControl;
+	
     public GameManagerPanel(Driver driver) {
+    	
+        Client client = driver.getClient(); // Assuming a getClient() method exists in the Driver class
+        gameManagerControl = new GameManagerControl(client);
+    	
         // Set preferred size to 1000x800
         setPreferredSize(new Dimension(1000, 800));
 
@@ -38,17 +49,36 @@ public class GameManagerPanel extends JPanel {
         howToPlayButton.setMaximumSize(buttonSize);
         logoutButton.setMaximumSize(buttonSize);
        
-        startGameButton.addActionListener(e -> driver.showPanel("GameLobbyPanel"));
-        joinGameButton.addActionListener(e -> driver.showPanel("GameLobbyPanel"));
-        //Action listener for accessRulesButton
-        howToPlayButton.addActionListener(e -> driver.showPanel("HowToPlayPanel"));
+        startGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String lobbyId = generateRandomLobbyId();
+                gameManagerControl.startGameSession(lobbyId);
+                driver.showPanel(new GameLobbyPanel(driver, lobbyId));
+            }
+        });
+
+        joinGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Generate a random lobby ID
+                String lobbyId = generateRandomLobbyId();
+
+                // Join an existing game session with the random lobby ID
+                gameManagerControl.startGameSession(lobbyId);
+
+                // Open the GameLobbyPanel
+                driver.showPanel(new GameLobbyPanel(driver, lobbyId));
+            }
+        });
         
-        // Add action listener to logout button
+        howToPlayButton.addActionListener(e -> driver.showPanel(new HowToPlayPanel(driver)));
+        
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Show the StartUpPanel
-                driver.showPanel("StartUpPanel");
+                driver.showPanel(new StartUpPanel(driver));
             }
         });
 
@@ -77,5 +107,18 @@ public class GameManagerPanel extends JPanel {
 
         // Add the content panel to the GameManagerPanel
         add(contentPanel, BorderLayout.CENTER);
+    }
+
+    private String generateRandomLobbyId() {
+        // Generate a random 6-character lobby ID
+        Random random = new Random();
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder lobbyId = new StringBuilder();
+
+        for (int i = 0; i < 6; i++) {
+            lobbyId.append(characters.charAt(random.nextInt(characters.length())));
+        }
+
+        return lobbyId.toString();
     }
 }
