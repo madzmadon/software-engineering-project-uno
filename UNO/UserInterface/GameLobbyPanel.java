@@ -27,7 +27,7 @@ public class GameLobbyPanel extends JPanel{
     this.driver=driver;
     Client client = driver.getClient(); 
     gameLobbyControl = new GameLobbyControl(client);
-    boolean isHost = true;
+   
     
 
     // Set preferred size to 1000x800
@@ -66,16 +66,14 @@ public class GameLobbyPanel extends JPanel{
 
     // Set maximum size for button
     Dimension buttonSize = new Dimension(300, 70);
-
-    // Set up pointTotalTextField
-    JTextField pointTotalTextField = new JTextField(1);
+  
 
     startGameSessionButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          if (isHost)
+      
             gameLobbyControl.createLobby();
-            pointTotalTextField.isVisible();
+           
             driver.showPanel(new GameSessionPanel(driver, lobbyId));
         }
     });
@@ -97,8 +95,8 @@ public class GameLobbyPanel extends JPanel{
     contentPanel.setBackground(Color.decode("#1E2448"));
     contentPanel.add(logoLabel, BorderLayout.NORTH);
     contentPanel.add(buttonPanel, BorderLayout.CENTER);
-    contentPanel.add(pointTotalTextField, BorderLayout.WEST);
-    
+  
+
     // Add the content panel to the GameManagerPanel
     add(contentPanel, BorderLayout.CENTER);
 
