@@ -3,6 +3,9 @@ package ClientCommunication;
 import java.util.ArrayList;
 import java.util.List;
 
+import GameLogic.GameRequest;
+import GameLogic.RequestCode;
+
 public class GameLobbyControl {
     private Client client;
     private List<String> lobbyPlayers = new ArrayList<>();
@@ -14,33 +17,23 @@ public class GameLobbyControl {
 
     // Method to create a new game lobby
     public void createLobby() {
-        Object createLobbyRequest = "CREATE_LOBBY";
-        client.sendRequest(createLobbyRequest);
-        System.out.println("Lobby creation requested.");
+        GameRequest createLobbyRequest = new GameRequest(RequestCode.START_GAME);
+        client.handleMessageFromServer(createLobbyRequest);
+        System.out.println("Game creation requested.");
     }
-
     // Method to join an existing game lobby
     public void joinLobby(String lobbyId) {
-        Object joinLobbyRequest = "JOIN_LOBBY:" + lobbyId;
-        client.sendRequest(joinLobbyRequest);
+        GameRequest joinLobbyRequest = new GameRequest(RequestCode.JOIN_GAME);
+        client.handleMessageFromServer(joinLobbyRequest);
         System.out.println("Requested to join lobby: " + lobbyId);
     }
 
+
     // Method to leave a game lobby
     public void leaveLobby(String lobbyId) {
-        Object leaveLobbyRequest = "LEAVE_LOBBY:" + lobbyId;
-        client.sendRequest(leaveLobbyRequest);
-        System.out.println("Requested to leave lobby: " + lobbyId);
+        GameRequest leaveLobbyRequest = new GameRequest(RequestCode.LEAVE_GAME);
+        client.handleMessageFromServer(leaveLobbyRequest);
+        System.out.println("Requested to leave lobby and logout: " + lobbyId);
     }
 
-    // Method to update the status of the lobby based on server updates
-    public void updateLobbyStatus() {
-        Object lobbyStatus = client.receiveLobbyStatus();
-        handleLobbyStatusUpdate(lobbyStatus);
-    }
-
-    // Private method to handle updates to the lobby status
-    private void handleLobbyStatusUpdate(Object lobbyStatus) {
-        System.out.println("Lobby status updated: " + lobbyStatus);
-    }
 }

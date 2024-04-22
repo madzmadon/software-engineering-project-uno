@@ -1,14 +1,19 @@
 package ClientCommunication;
 
+import java.io.IOException;
+
 import Database.CreateAccountData;
+import ServerCommunication.AccountResponse;
 
 public class CreateAccountControl {
     private Client client;
     private String username;
     private String password;
+    private boolean accountCreationResponseReceived;
 
     public CreateAccountControl(Client client) {
         this.client = client;
+        this.accountCreationResponseReceived = false;
     }
 
     public void setUsername(String username) {
@@ -25,25 +30,45 @@ public class CreateAccountControl {
             return false;
         }
 
-        CreateAccountData data = new CreateAccountData();
-        data.setUsername(username);
-        data.setPassword(password);
+        // Send the account creation request with the new username and password
+        try {
+            client.openConnection(); // Open connection if not already opened
+            CreateAccountData accountData = new CreateAccountData();
+            accountData.setUsername(username);
+            accountData.setPassword(password);
+            client.sendToServer(accountData);
+        } catch (IOException e) {
+            // Handle connection or I/O errors
+            e.printStackTrace();
+            return false;
+        }
 
-        client.sendRequest(data);
-        boolean creationSuccessful = client.receiveAccountCreationResponse();
-        handleAccountCreationResponse(creationSuccessful);
-        return creationSuccessful;
+        // Wait for the response in handleMessageFromServer
+        waitForResponse();
+
+        // Check if account creation response was received
+        return accountCreationResponseReceived;
+    }
+
+    private void waitForResponse() {
+        // Pause the thread for a short time
+        try {
+            Thread.sleep(1000); // Wait for 1 second
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean validateInput() {
         return !username.isEmpty() && !password.isEmpty();
     }
 
-    private void handleAccountCreationResponse(boolean success) {
-        if (success) {
-            System.out.println("Account creation successful!");
+    // This method is called from handleMessageFromServer
+    public void processAccountCreationResponse(AccountResponse response) {
+        if (response == AccountResponse.SUCCESS) {
+            accountCreationResponseReceived = true;
         } else {
-            System.out.println("Account creation failed. Please try again later.");
+            System.out.println("Account creation failed: " + response.name());
         }
     }
 }

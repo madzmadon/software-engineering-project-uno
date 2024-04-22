@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import GameLogic.Deck;
+import GameLogic.GameRequest;
 import GameLogic.Player;
+import GameLogic.RequestCode;
 import GameLogic.Card;
 
 public class GameSessionControl {
@@ -51,6 +53,9 @@ public class GameSessionControl {
         if (isValidMove(card)) {
             boolean removed = player.playCard(card);
             if (removed) {
+                GameRequest playCardRequest = new GameRequest(RequestCode.PLAY_CARD);
+                playCardRequest.setCard(card);
+                client.handleMessageFromServer(playCardRequest);
                 discardPile.add(card);
                 nextTurn();
             } else {
@@ -64,11 +69,15 @@ public class GameSessionControl {
     }
 
     public Card drawCard() {
+        GameRequest drawCardRequest = new GameRequest(RequestCode.DRAW_CARD);
+        client.handleMessageFromServer(drawCardRequest);
         return deck.drawCard();
     }
 
     public void callUno(Player player) {
         if (player.getHand().size() == 1) {
+            GameRequest announceUnoRequest = new GameRequest(RequestCode.ANNOUNCE_UNO);
+            client.handleMessageFromServer(announceUnoRequest);
             System.out.println(player.getName() + " called UNO!");
         } else {
             // Handle error (e.g., penalty)
@@ -83,11 +92,6 @@ public class GameSessionControl {
     public void broadcastMessage(String message) {
         System.out.println("Broadcasting: " + message);
         // Here you would actually send a message to all clients
-    }
-
-    public void updateGameState() {
-        Object gameStateUpdate = client.receiveGameState();  // Simulating receiving a game state
-        System.out.println("Game state updated for lobby " + lobbyId + ": " + gameStateUpdate);
     }
 
     private Player getNextPlayer() {

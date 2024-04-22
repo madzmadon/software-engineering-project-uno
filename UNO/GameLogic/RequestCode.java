@@ -1,0 +1,7 @@
+package GameLogic;
+
+public enum RequestCode {
+
+    START_GAME, JOIN_GAME, START_SESSION, PLAY_CARD, DRAW_CARD, ANNOUNCE_UNO, LEAVE_GAME, END_SESSION, END_GAME
+
+}

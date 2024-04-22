@@ -1,8 +1,10 @@
 package Database;
+import java.io.Serializable;
 
-public class LoginData {
-
-    private String username;
+public class LoginData implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	private String username;
     private String password;
 
     public LoginData(String username, String password)

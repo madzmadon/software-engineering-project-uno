@@ -3,6 +3,9 @@ package ClientCommunication;
 import java.util.HashMap;
 import java.util.Map;
 
+import GameLogic.GameRequest;
+import GameLogic.RequestCode;
+
 public class GameManagerControl {
     private Client client;
     private Map<String, GameSessionControl> activeSessions;
@@ -15,8 +18,8 @@ public class GameManagerControl {
 
     // Method to start a new game session for a specific lobby
     public void startGameSession(String lobbyId) {
-        Object startGameRequest = "START_GAME_SESSION:" + lobbyId;
-        client.sendRequest(startGameRequest);
+        GameRequest startSessionRequest = new GameRequest(RequestCode.START_SESSION);
+        client.handleMessageFromServer(startSessionRequest);
         System.out.println("Game session start requested for lobby: " + lobbyId);
 
         // Initialize and store a new game session control for this lobby
@@ -26,18 +29,12 @@ public class GameManagerControl {
 
     // Method to end a specific game session
     public void endGameSession(String lobbyId) {
-        Object endGameRequest = "END_GAME_SESSION:" + lobbyId;
-        client.sendRequest(endGameRequest);
+    	GameRequest endSessionRequest = new GameRequest(RequestCode.END_SESSION);
+        client.handleMessageFromServer(endSessionRequest);
         System.out.println("Game session end requested for lobby: " + lobbyId);
 
         // Remove the session from active sessions
         activeSessions.remove(lobbyId);
     }
 
-    // Method to update all active game sessions based on server updates
-    public void updateGameSessions() {
-        for (Map.Entry<String, GameSessionControl> entry : activeSessions.entrySet()) {
-            entry.getValue().updateGameState();
-        }
-    }
 }

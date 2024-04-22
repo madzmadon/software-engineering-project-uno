@@ -8,7 +8,6 @@ import java.util.Properties;
 public class Database {
 
     private Connection connection;
-    private String key;
 
     public Database(String property_file_name)
     {
@@ -47,7 +46,6 @@ public class Database {
         url = properties.getProperty("url");
         username = properties.getProperty("user");
         password = properties.getProperty("password");
-        key = properties.getProperty("key");
 
         // Attempt to connect to the database.
         try
@@ -206,7 +204,6 @@ public class Database {
 
     private boolean verifyCredentials(String username, String password)
     {
-    	return ((!username.isEmpty() && !password.isEmpty()) && (username.length() <= 32 && password.length() <= 16));
-    }
+    	return ((!username.isEmpty() && !password.isEmpty()) && (username.length() <= 32 && password.length() <= 32));    }
     
-}
+	}

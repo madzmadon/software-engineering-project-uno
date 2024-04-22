@@ -14,12 +14,11 @@ public class CreateAccountPanel extends JPanel {
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
     private CreateAccountControl createAccountControl;
-    
+
     public CreateAccountPanel(Driver driver) {
-    	
-    	Client client = driver.getClient();
+        Client client = driver.getClient();
         createAccountControl = new CreateAccountControl(client);
-        
+
         // Set preferred size to 1000x800
         setPreferredSize(new Dimension(1000, 800));
 
@@ -43,7 +42,6 @@ public class CreateAccountPanel extends JPanel {
         // Add components to the form panel
         formPanel.add(DesignUtils.createLabel("Username:"));
         formPanel.add(usernameField);
-        formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         formPanel.add(DesignUtils.createLabel("Password:"));
         formPanel.add(passwordField);
@@ -94,7 +92,7 @@ public class CreateAccountPanel extends JPanel {
                 }
             }
         });
-        
+
         // Add buttons to the buttons panel
         buttonsPanel.add(cancelButton);
         buttonsPanel.add(Box.createRigidArea(new Dimension(20, 0)));

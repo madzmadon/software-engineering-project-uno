@@ -8,10 +8,13 @@ public class Player {
     private List<Card> hand;
     private int points;
 
-    public Player(String name) {
-        this.name = name;
+    public Player() {
         this.hand = new ArrayList<>();
         this.points = 0;
+    }
+
+	public void setPlayerName(String name) {
+    	this.name = name;
     }
 
     public void drawCard(Card card) {
@@ -29,6 +32,10 @@ public class Player {
 
     public List<Card> getHand() {
         return new ArrayList<>(hand);
+    }
+    
+    public void setHand(List<Card> playerHand) {
+    	this.hand = playerHand;
     }
 
     public int getPoints() {
