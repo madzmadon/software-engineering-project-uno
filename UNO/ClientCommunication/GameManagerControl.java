@@ -19,7 +19,7 @@ public class GameManagerControl {
     // Method to start a new game session for a specific lobby
     public void startGameSession(String lobbyId) {
         GameRequest startSessionRequest = new GameRequest(RequestCode.START_SESSION);
-        client.handleMessageFromServer(startSessionRequest);
+        client.sendToServer(startSessionRequest);
         System.out.println("Game session start requested for lobby: " + lobbyId);
 
         // Initialize and store a new game session control for this lobby
@@ -30,7 +30,7 @@ public class GameManagerControl {
     // Method to end a specific game session
     public void endGameSession(String lobbyId) {
     	GameRequest endSessionRequest = new GameRequest(RequestCode.END_SESSION);
-        client.handleMessageFromServer(endSessionRequest);
+        client.sendToServer(endSessionRequest);
         System.out.println("Game session end requested for lobby: " + lobbyId);
 
         // Remove the session from active sessions

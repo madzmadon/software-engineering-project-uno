@@ -17,12 +17,12 @@ public class GameControl {
     public void startGame() {
         GameRequest startGameRequest = new GameRequest(RequestCode.START_GAME);
         startGameRequest.setThreshold(200); // Set the desired threshold value
-        client.handleMessageFromServer(startGameRequest);
+        client.sendToServer(startGameRequest);
         System.out.println("Game start requested for game ID: " + gameId);
     }
     // Method to send a move or action to the server
     public void sendPlayerAction(GameRequest request) {
-        client.handleMessageFromServer(request);
+        client.sendToServer(request);
         System.out.println("Player action sent for game ID " + gameId + ": " + request.getRequest());
     }
 

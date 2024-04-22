@@ -36,7 +36,6 @@ public class GameManagerPanel extends JPanel {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         // Create buttons
-        JButton startGameButton = DesignUtils.createSpecialButton("Start Game");
         JButton joinGameButton = DesignUtils.createSpecialButton("Join Game");
         JButton howToPlayButton = DesignUtils.createButton("How to Play");
         JButton logoutButton = DesignUtils.createButton("Log out");
@@ -44,19 +43,9 @@ public class GameManagerPanel extends JPanel {
         
         // Set maximum size for buttons to ensure uniformity
         Dimension buttonSize = new Dimension(300, 70);
-        startGameButton.setMaximumSize(buttonSize);
         joinGameButton.setMaximumSize(buttonSize);
         howToPlayButton.setMaximumSize(buttonSize);
         logoutButton.setMaximumSize(buttonSize);
-       
-        startGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String lobbyId = generateRandomLobbyId();
-                gameManagerControl.startGameSession(lobbyId);
-                driver.showPanel(new GameLobbyPanel(driver, lobbyId));
-            }
-        });
 
         joinGameButton.addActionListener(new ActionListener() {
             @Override

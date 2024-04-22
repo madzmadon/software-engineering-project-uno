@@ -11,7 +11,7 @@ public class StartUpControl {
     // Method to handle the login process
     public void login(String username, String password) {
         LoginControl loginControl = new LoginControl(client, username, password);
-        client.handleMessageFromServer(loginControl);
+        client.sendToServer(loginControl);
     }
 
 }

@@ -55,7 +55,7 @@ public class GameSessionControl {
             if (removed) {
                 GameRequest playCardRequest = new GameRequest(RequestCode.PLAY_CARD);
                 playCardRequest.setCard(card);
-                client.handleMessageFromServer(playCardRequest);
+                client.sendToServer(playCardRequest);
                 discardPile.add(card);
                 nextTurn();
             } else {
@@ -70,14 +70,14 @@ public class GameSessionControl {
 
     public Card drawCard() {
         GameRequest drawCardRequest = new GameRequest(RequestCode.DRAW_CARD);
-        client.handleMessageFromServer(drawCardRequest);
+        client.sendToServer(drawCardRequest);
         return deck.drawCard();
     }
 
     public void callUno(Player player) {
         if (player.getHand().size() == 1) {
             GameRequest announceUnoRequest = new GameRequest(RequestCode.ANNOUNCE_UNO);
-            client.handleMessageFromServer(announceUnoRequest);
+            client.sendToServer(announceUnoRequest);
             System.out.println(player.getName() + " called UNO!");
         } else {
             // Handle error (e.g., penalty)
