@@ -2,7 +2,7 @@ package GameLogic;
 
 public enum CardColor {
 
-    NONE("none"), BLUE("blue"), GREEN("green"), RED("red"), YELLOW("yellow");
+     BLUE("blue"), GREEN("green"), RED("red"), YELLOW("yellow"), NONE("none");
 
     private String color;
 

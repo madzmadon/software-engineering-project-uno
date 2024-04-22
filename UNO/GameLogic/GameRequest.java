@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class GameRequest implements Serializable {
 
     private RequestCode request;
-    private int threshold;
     private Card card;
 
     public GameRequest(RequestCode request)
@@ -29,18 +28,6 @@ public class GameRequest implements Serializable {
     public Card getCard()
     {
         return card;
-    }
-
-    // Sets the threshold for the game.
-    public void setThreshold(int threshold)
-    {
-        this.threshold = threshold;
-    }
-
-    // Returns the threshold for the game.
-    public int getThreshold()
-    {
-        return threshold;
     }
 
 }

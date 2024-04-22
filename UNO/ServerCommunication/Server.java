@@ -17,15 +17,18 @@ public class Server extends AbstractServer {
     private final static int PORT = 12345;
     private final static String property_file_name = "./Database/db.properties";
 
+    private int threshold;
+
     private Database database;
     private HashMap<ConnectionToClient, LoginData> users;
     private ServerGameController game;
 
-    public Server()
+    public Server(int threshold)
     {
 
         super(PORT);
         this.setTimeout(500);
+        this.threshold = threshold;
 
         // Initialize the data fields.
         this.database = new Database(property_file_name);
@@ -172,10 +175,33 @@ public class Server extends AbstractServer {
         return sanitized_users;
     }
 
+    public int getThreshold()
+    {
+        return threshold;
+    }
+
     public static void main(String[] args) {
 
         // Declare variables.
-        Server server = new Server();
+        Server server = null;
+        int threshold = 0;
+
+        // Ensure that the command line arguments include the threshold.
+        if (args.length < 2)
+        {
+
+            // Display an error message indicating that the server requires an integer for the threshold.
+            System.out.println("Missing required argument: Threshold (int) - Specifies the minimum number of points to win a game.");
+
+            return;
+
+        }
+
+        // Obtain the threshold from the user.
+        threshold = Integer.parseInt(args[1]);
+
+        // Declare variables.
+        server = new Server(threshold);
 
         // Attempt to start the server.
         try

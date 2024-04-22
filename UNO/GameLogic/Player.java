@@ -9,6 +9,7 @@ public class Player implements Serializable {
     private String player_name;
     private int score;
     private ArrayList<Card> hand;
+    private boolean safe;
 
     public Player()
     {
@@ -55,7 +56,7 @@ public class Player implements Serializable {
     }
 
     // Returns the cards within the player's hand.
-    public List<Card> getHand()
+    public ArrayList<Card> getHand()
     {
         return hand;
     }
@@ -64,6 +65,18 @@ public class Player implements Serializable {
     public void setHand(ArrayList<Card> hand)
     {
         this.hand = hand;
+    }
+
+    // Sets the flag that determines if the player has called their current Uno.
+    public void isSafe(boolean safe)
+    {
+        this.safe = safe;
+    }
+
+    // Returns the value of the flag that determines if the player has called their Uno.
+    public boolean isSafe()
+    {
+        return safe;
     }
 
     // Sums the points of every card within the player's hand.

@@ -14,13 +14,13 @@ public class Card implements Serializable {
     }
 
     // Returns the color of the card.
-    public CardColor get_card_color()
+    public CardColor getCardColor()
     {
         return color;
     }
 
     // Returns the face value of the card.
-    public CardFaceValue get_face_value()
+    public CardFaceValue getFaceValue()
     {
         return face_value;
     }
@@ -65,7 +65,7 @@ public class Card implements Serializable {
     // Determines if this and another card match either the color or face value.
     public boolean cardMatches(Card other)
     {
-        return (color == other.get_card_color()) || (face_value == other.get_face_value());
+        return (color == other.getCardColor()) || (face_value == other.getFaceValue());
     }
 
 }

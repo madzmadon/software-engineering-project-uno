@@ -25,43 +25,55 @@ public class GameState implements Serializable {
     }
 
     // Sets the top card on the play stack.
-    public void set_top_card(Card top_card)
+    public void setTopCard(Card top_card)
     {
         this.top_card = top_card;
     }
 
     // Returns the top card on the play stack.
-    public Card get_top_card()
+    public Card getTopCard()
     {
         return top_card;
     }
 
+    // Returns the direction that the players are going in.
+    public boolean isForward()
+    {
+        return forward;
+    }
+
+    // Sets the direction that the players are going in.
+    public void isForward(boolean forward)
+    {
+        this.forward = forward;
+    }
+
     // Sets the name of the current player.
-    public void set_current_player_name(String name)
+    public void setCurrentPlayerName(String name)
     {
         this.current_player_name = name;
     }
 
     // Returns the name of the current player.
-    public String get_current_player_name()
+    public String getCurrentPlayerName()
     {
         return current_player_name;
     }
 
     // Returns the scores of each player.
-    public Map<String, Integer> get_scores()
+    public Map<String, Integer> getScores()
     {
         return scores;
     }
 
     // Sets the scores of each player.
-    public void set_scores(HashMap<String, Integer> scores)
+    public void setScores(HashMap<String, Integer> scores)
     {
         this.scores = scores;
     }
 
     // Sets the threshold that a player must meet to win the game.
-    public void set_threshold(int threshold) throws Exception
+    public void setThreshold(int threshold) throws Exception
     {
 
         // Set the value for the threshold.
@@ -70,7 +82,7 @@ public class GameState implements Serializable {
     }
 
     // Returns the threshold that a player must meet to win the game.
-    public int get_threshold()
+    public int getThreshold()
     {
         return threshold;
     }

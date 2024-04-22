@@ -4,7 +4,8 @@ public enum CardFaceValue {
 
     ZERO("0", 0), ONE("1", 1), TWO("2", 2), THREE("3", 3), FOUR("4", 4),
     FIVE("5", 5), SIX("6", 6), SEVEN("7", 7), EIGHT("8", 8), NINE("9", 9),
-    PLUS_TWO("+2", 20), REVERSE("reverse", 20), SKIP("skip", 20), WILDCARD("wildcard", 50);
+    PLUS_TWO("+2", 20), REVERSE("reverse", 20), SKIP("skip", 20), WILDCARD("wildcard", 50),
+    PLUS_FOUR("+4", 50);
 
     private String name;
     private int value;
