@@ -16,7 +16,7 @@ public class Server extends AbstractServer {
 
     private final static int PORT = 12345;
     private final static String property_file_name = "./Database/db.properties";
-
+    private int threshold = 200;
     private Database database;
     private HashMap<ConnectionToClient, LoginData> users;
     private ServerGameController game;
@@ -34,6 +34,11 @@ public class Server extends AbstractServer {
 
     }
 
+    public int getThreshold()
+    {
+        return threshold;
+    }
+    
     @Override
     protected void handleMessageFromClient(Object o, ConnectionToClient connectionToClient) {
 

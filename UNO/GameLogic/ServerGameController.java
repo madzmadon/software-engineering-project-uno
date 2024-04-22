@@ -64,6 +64,12 @@ public class ServerGameController {
             case PLAY_CARD -> this.handlePlayCard();
             case DRAW_CARD -> this.handleDrawCard();
             case ANNOUNCE_UNO -> this.handleAnnounceUno();
+            // Add for additional cases
+            case END_GAME -> throw new UnsupportedOperationException("Unimplemented case: " + request.getRequest());
+            case END_SESSION -> throw new UnsupportedOperationException("Unimplemented case: " + request.getRequest());
+            case JOIN_GAME -> throw new UnsupportedOperationException("Unimplemented case: " + request.getRequest());
+            case LEAVE_GAME -> throw new UnsupportedOperationException("Unimplemented case: " + request.getRequest());
+            default -> throw new IllegalArgumentException("Unexpected value: " + request.getRequest());
 
         }
 

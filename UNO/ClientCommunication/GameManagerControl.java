@@ -1,40 +1,37 @@
 package ClientCommunication;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import GameLogic.GameRequest;
 import GameLogic.RequestCode;
 
 public class GameManagerControl {
     private Client client;
-    private Map<String, GameSessionControl> activeSessions;
+    private GameLobbyControl gameLobby;
 
     // Constructor to initialize the GameManagerControl with a Client object
     public GameManagerControl(Client client) {
         this.client = client;
-        this.activeSessions = new HashMap<>();
     }
 
-    // Method to start a new game session for a specific lobby
-    public void startGameSession(String lobbyId) {
-        GameRequest startSessionRequest = new GameRequest(RequestCode.START_SESSION);
-        client.handleMessageFromServer(startSessionRequest);
-        System.out.println("Game session start requested for lobby: " + lobbyId);
+    //UPDATE NAME TO RELFECT REQUEST
+    // Method to start a new game
+    public void startGame() {
+        GameRequest startSessionRequest = new GameRequest(RequestCode.JOIN_GAME);
+        client.sendRequest(startSessionRequest);
+        System.out.println("Join game requested");
 
-        // Initialize and store a new game session control for this lobby
-        GameSessionControl gameSession = new GameSessionControl(client, lobbyId);
-        activeSessions.put(lobbyId, gameSession);
+        // Initialize a new game session control
+        gameLobby = new GameLobbyControl(client);
     }
 
-    // Method to end a specific game session
-    public void endGameSession(String lobbyId) {
-    	GameRequest endSessionRequest = new GameRequest(RequestCode.END_SESSION);
-        client.handleMessageFromServer(endSessionRequest);
-        System.out.println("Game session end requested for lobby: " + lobbyId);
-
-        // Remove the session from active sessions
-        activeSessions.remove(lobbyId);
+    //UPDATE NAME TO REFLECT REQUEST, CREATE HANDLING THE UI TO UPDATE A PLAYER LEAVING
+    // Method to end the current game
+    public void leaveGame() {
+        if (gameLobby != null) {
+        	//NEED A REQUEST TO LOG USER OUT AND REMOVE THEM FROM SESSION
+            GameRequest endSessionRequest = new GameRequest(RequestCode.LOG_OUT);
+            client.sendRequest(endSessionRequest);
+            System.out.println("Left game.");
+        }
     }
 
 }

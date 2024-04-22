@@ -7,6 +7,7 @@ public class Player {
     private String name;
     private List<Card> hand;
     private int points;
+    private boolean safe;
 
     public Player() {
         this.hand = new ArrayList<>();
@@ -31,7 +32,7 @@ public class Player {
     }
 
     public List<Card> getHand() {
-        return new ArrayList<>(hand);
+        return hand;
     }
     
     public void setHand(List<Card> playerHand) {
@@ -44,5 +45,17 @@ public class Player {
     
     public String getName() {
         return name;
+    }
+    
+ // Sets the flag that determines if the player has called their current Uno.
+    public void isSafe(boolean safe)
+    {
+        this.safe = safe;
+    }
+
+    // Returns the value of the flag that determines if the player has called their Uno.
+    public boolean isSafe()
+    {
+        return safe;
     }
 }

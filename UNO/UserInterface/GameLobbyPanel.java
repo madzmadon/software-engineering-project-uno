@@ -4,21 +4,31 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import ClientCommunication.GameLobbyControl;
+import ClientCommunication.GameManagerControl;
+import ClientCommunication.Client;
 //Source for JList implementation: https://www.geeksforgeeks.org/java-swing-jlist-with-examples/
 import javax.swing.*;
 
 public class GameLobbyPanel extends JPanel{
 
+  private GameLobbyControl gameLobbyControl;
   private JLabel logoLabel;
   private JButton startGameButton;
   private String namesAndScores;
   private JList namesAndScoresJList;
   private Driver driver;
 
-  public GameLobbyPanel(Driver driver, String lobbyId)
+
+
+
+  public GameLobbyPanel(Driver driver)
   {
     this.driver=driver;
+    Client client = driver.getClient(); 
+    gameLobbyControl = new GameLobbyControl(client);
+   
+    
 
     // Set preferred size to 1000x800
     setPreferredSize(new Dimension(1000, 800));
@@ -29,9 +39,7 @@ public class GameLobbyPanel extends JPanel{
     // Load the UNO logo
     ImageIcon icon = DesignUtils.loadUnoLogo(800, 200);
 
-    // Set up the title of the panel
-    // JLabel panelTitleLabel = DesignUtils.createTitleLabel("Game Lobby");
-
+   
     // Create a JLabel with the resized image as the title
     JLabel logoLabel = new JLabel(icon);
     logoLabel.setBackground(Color.decode("#1E2448")); // Set the background color of the JLabel
@@ -51,24 +59,29 @@ public class GameLobbyPanel extends JPanel{
     gameLobbyPanel.setLayout(new BoxLayout(gameLobbyPanel, BoxLayout.Y_AXIS));
     gameLobbyPanel.setBackground(Color.decode("#1E2448"));
     gameLobbyPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
+     
     // Create Start Game Session Button
     JButton startGameSessionButton = DesignUtils.createSpecialButton("Start Game Session");
+    JButton leaveGameSessionButton =  DesignUtils.createButton("Leave Game Session");
 
     // Set maximum size for button
     Dimension buttonSize = new Dimension(300, 70);
+  
 
-    //Action listener for accessRulesButton (show GameSessionPanel for now)
     startGameSessionButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            driver.showPanel(new GameSessionPanel(driver, lobbyId));
+      
+            gameLobbyControl.startGame();
+           
+            driver.showPanel(new GameSessionPanel(driver));
         }
     });
-    startGameSessionButton.addActionListener(new ActionListener() {
+    leaveGameSessionButton.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            driver.showPanel(new GameSessionPanel(driver, lobbyId));
+        	gameLobbyControl.logOut();
+            driver.showPanel(new StartUpPanel(driver));
         }
     });
 
@@ -83,6 +96,7 @@ public class GameLobbyPanel extends JPanel{
     contentPanel.setBackground(Color.decode("#1E2448"));
     contentPanel.add(logoLabel, BorderLayout.NORTH);
     contentPanel.add(buttonPanel, BorderLayout.CENTER);
+  
 
     // Add the content panel to the GameManagerPanel
     add(contentPanel, BorderLayout.CENTER);
@@ -100,7 +114,4 @@ public class GameLobbyPanel extends JPanel{
   }
 }
 
-  //Idea(s) for possible implementation:
-  //DefaultListModel<String> dlm = new DefaultListModel<>();
-  //JList Cells?
-
+  

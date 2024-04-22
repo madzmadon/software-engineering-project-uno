@@ -11,7 +11,11 @@ public class StartUpControl {
     // Method to handle the login process
     public void login(String username, String password) {
         LoginControl loginControl = new LoginControl(client, username, password);
-        client.handleMessageFromServer(loginControl);
+        boolean loginSuccessful = loginControl.login();
+        if (loginSuccessful) {
+            System.out.println("Login successful!");
+        } else {
+            System.out.println("Login failed.");
+        }
     }
-
 }

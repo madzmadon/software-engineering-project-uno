@@ -11,7 +11,7 @@ import java.awt.*;
 
 public class Driver extends JFrame {
     private JPanel currentPanel;
-    Client client = new Client();
+    Client client = new Client(this);
     public Driver() {
         setTitle("UNO Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
