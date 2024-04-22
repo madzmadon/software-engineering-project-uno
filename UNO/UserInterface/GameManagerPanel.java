@@ -79,7 +79,6 @@ public class GameManagerPanel extends JPanel {
 
         // Add buttons to the buttonPanel with vertical and horizontal center alignment
         buttonPanel.add(Box.createVerticalGlue());
-        buttonPanel.add(startGameButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(joinGameButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
