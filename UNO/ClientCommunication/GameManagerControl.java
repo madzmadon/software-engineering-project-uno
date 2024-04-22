@@ -18,11 +18,7 @@ public class GameManagerControl {
         GameRequest startSessionRequest = new GameRequest(RequestCode.JOIN_GAME);
         client.sendRequest(startSessionRequest);
         System.out.println("Join game requested");
-
-        // Initialize a new game session control
-        gameLobby = new GameLobbyControl(client);
     }
-
     //UPDATE NAME TO REFLECT REQUEST, CREATE HANDLING THE UI TO UPDATE A PLAYER LEAVING
     // Method to end the current game
     public void leaveGame() {

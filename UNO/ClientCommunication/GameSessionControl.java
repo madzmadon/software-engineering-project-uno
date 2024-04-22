@@ -11,7 +11,6 @@ import GameLogic.Card;
 
 public class GameSessionControl {
     private Client client;
-    private String lobbyId;
     private List<Player> players = new ArrayList<>();
     private int currentPlayerIndex = 0;
     private List<Card> discardPile = new ArrayList<>();
@@ -58,6 +57,7 @@ public class GameSessionControl {
             if (removed) {
                 GameRequest playCardRequest = new GameRequest(RequestCode.PLAY_CARD);
                 playCardRequest.setCard(card);
+
                 client.sendRequest(playCardRequest);
                 discardPile.add(card);
                 nextTurn();
@@ -73,7 +73,9 @@ public class GameSessionControl {
 
     public Card drawCard() {
         GameRequest drawCardRequest = new GameRequest(RequestCode.DRAW_CARD);
+
         client.sendRequest(drawCardRequest);
+
         return deck.drawCard();
     }
 
@@ -81,7 +83,9 @@ public class GameSessionControl {
     public void callUno(Player player) {
         if (player.getHand().size() == 1) {
             GameRequest announceUnoRequest = new GameRequest(RequestCode.ANNOUNCE_UNO);
+
             client.sendRequest(announceUnoRequest);
+
             System.out.println(player.getName() + " called UNO!");
         } else {
             // Handle error (e.g., penalty)

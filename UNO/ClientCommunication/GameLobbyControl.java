@@ -31,4 +31,5 @@ public class GameLobbyControl {
         client.sendRequest(leaveLobbyRequest);
         System.out.println("Requested to leave lobby and logout.");
     }
+
 }

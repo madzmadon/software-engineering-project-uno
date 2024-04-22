@@ -46,7 +46,7 @@ public class GameManagerPanel extends JPanel {
         joinGameButton.setMaximumSize(buttonSize);
         howToPlayButton.setMaximumSize(buttonSize);
         logoutButton.setMaximumSize(buttonSize);
-       
+        
         joinGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
