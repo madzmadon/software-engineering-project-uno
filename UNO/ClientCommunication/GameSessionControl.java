@@ -41,7 +41,8 @@ public class GameSessionControl {
 
     //TODO: Return game request ... LAST CARD PLAYED: Check for server to check if last card
     public void playCard(Card card) {
-        GameRequest playCardRequest = new GameRequest(RequestCode.PLAY_CARD, card);
+        GameRequest playCardRequest = new GameRequest(RequestCode.PLAY_CARD);
+        playCardRequest.setCard(card);
         try {
             client.sendRequest(playCardRequest);
             System.out.println("Play card Request");

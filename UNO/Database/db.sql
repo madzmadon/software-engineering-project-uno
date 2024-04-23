@@ -9,7 +9,7 @@ DROP TABLE uno_user;
 -- Create the user table.
 CREATE TABLE uno_user (
     username VARCHAR(32),
-    password VARCHAR(32)
+    password VARBINARY(32)
 );
 
 -- Add the primary key constraint to the user table.

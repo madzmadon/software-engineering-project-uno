@@ -18,6 +18,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import ClientCommunication.GameSessionControl;
+import Database.LoginData;
 import GameLogic.Card;
 import GameLogic.GameState;
 import GameLogic.Player;
@@ -35,7 +36,7 @@ public class GameSessionPanel extends JPanel {
     private JLabel currentPlayerLabel;
     
     public GameSessionPanel(Driver driver) {
-        Client client = driver.getClient();
+    	Client client = driver.getClient();
         gameSessionControl = new GameSessionControl(client);
         // TODO: playerNamesAndHandCount Only show one player point of view with their cards, and then a list of player names with their card amount
 
@@ -43,23 +44,23 @@ public class GameSessionPanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.decode("#1E2448"));
 
-        // Top Player Panels
-        JPanel topPlayerPanel = new JPanel();
-        topPlayerPanel.setLayout(new BoxLayout(topPlayerPanel, BoxLayout.X_AXIS));
-        topPlayerPanel.setBackground(Color.decode("#1E2448"));
-        topPlayerPanel.setBorder(DesignUtils.createEmptyBorder(10, 10, 10, 10));
-        topPlayerPanel.add(playerNamesPanel);
-        topPlayerPanel.add(currentPlayerLabel);
+        // Top Panel with player information
+        JPanel playerInformationPanel = new JPanel();
+        playerInformationPanel.setLayout(new BoxLayout(playerInformationPanel, BoxLayout.X_AXIS));
+        playerInformationPanel.setBackground(Color.decode("#1E2448"));
+        playerInformationPanel.setBorder(DesignUtils.createEmptyBorder(10, 10, 10, 10));
+        playerInformationPanel.add(playerNamesPanel);
+        playerInformationPanel.add(currentPlayerLabel);
 
-        // Bottom Player Panels
-        JPanel bottomPlayerPanel = new JPanel();
-        bottomPlayerPanel.setLayout(new BoxLayout(bottomPlayerPanel, BoxLayout.X_AXIS));
-        bottomPlayerPanel.setBackground(Color.decode("#1E2448"));
-        bottomPlayerPanel.setBorder(DesignUtils.createEmptyBorder(10, 10, 10, 10));
+        // Active first person player with their cards
+        JPanel firstPersonPlayerPanel = new JPanel();
+        firstPersonPlayerPanel.setLayout(new BoxLayout(firstPersonPlayerPanel, BoxLayout.X_AXIS));
+        firstPersonPlayerPanel.setBackground(Color.decode("#1E2448"));
+        firstPersonPlayerPanel.setBorder(DesignUtils.createEmptyBorder(10, 10, 10, 10));
 
         JPanel player1Panel = createPlayerPanel("You");
-        bottomPlayerPanel.add(Box.createHorizontalStrut(20));
-        bottomPlayerPanel.add(player1Panel);
+        firstPersonPlayerPanel.add(Box.createHorizontalStrut(20));
+        firstPersonPlayerPanel.add(player1Panel);
 
         // Draw Pile and Discard Pile
         JPanel drawDiscardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
@@ -78,8 +79,8 @@ public class GameSessionPanel extends JPanel {
         unoButton = DesignUtils.createSpecialButton("Uno");
 
         // Add components to the main panel
-        add(topPlayerPanel, BorderLayout.NORTH);
-        add(bottomPlayerPanel, BorderLayout.SOUTH);
+        add(playerInformationPanel, BorderLayout.NORTH);
+        add(firstPersonPlayerPanel, BorderLayout.SOUTH);
         add(drawDiscardPanel, BorderLayout.CENTER);
         add(unoButton, BorderLayout.SOUTH);
 
@@ -106,7 +107,7 @@ public class GameSessionPanel extends JPanel {
         playerPanel.setBorder(DesignUtils.createEmptyBorder(10, 10, 10, 10));
 
         JLabel playerLabel = DesignUtils.createLabel(playerName);
-        playerHandPanel = new PlayerHandPanel();
+        playerHandPanel = new PlayerHandPanel(); // Pass the LoginData to the PlayerHandPanel constructor
         playerPanel.add(playerLabel);
         playerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         playerPanel.add(playerHandPanel);

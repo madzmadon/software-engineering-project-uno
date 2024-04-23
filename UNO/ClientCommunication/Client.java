@@ -14,6 +14,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -56,24 +57,25 @@ public class Client extends AbstractClient {
         	String response = (String) o;
         	handleWinnerAnnouncement(response);
             System.out.println("winner received.");
+        } else if (o instanceof List<?>) {
+            @SuppressWarnings("unchecked")
+			List<String> lobbyPlayers = (List<String>) o;
+            updateLobbyPlayers(lobbyPlayers);
         }
     }
 
     @Override
     protected void connectionEstablished() {
         super.connectionEstablished();
-
-        // Declare local variables.
-        LoginData data = new LoginData("Admin2", "Password!");
-
-        // Attempt to send the game request information to the server.
-        try {
-            // Send the request to the server.
-            sendToServer(data);
-        } catch (IOException exception) {
-            // Display the exception information.
-            exception.printStackTrace();
-        }
+//
+//        // Attempt to send the game request information to the server.
+//        try {
+//            // Send the request to the server.
+//            sendToServer(data);
+//        } catch (IOException exception) {
+//            // Display the exception information.
+//            exception.printStackTrace();
+//        }
     }
 
     public void sendRequest(Object request) throws IOException {
@@ -201,5 +203,10 @@ public class Client extends AbstractClient {
     public Object receiveLobbyStatus() {
         // This should be updated dynamically from the server messages
         return "Lobby status updated";
+    }
+    
+    private void updateLobbyPlayers(List<String> players) {
+        GameLobbyPanel gameLobbyPanel = (GameLobbyPanel) driver.getCurrentPanel();
+        gameLobbyPanel.updateNamesAndScores(players);
     }
 }

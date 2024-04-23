@@ -7,6 +7,7 @@ import java.util.List;
 import GameLogic.Card;
 import GameLogic.GameRequest;
 import GameLogic.RequestCode;
+import UserInterface.GameLobbyPanel;
 
 public class GameLobbyControl {
     private Client client;
@@ -22,6 +23,7 @@ public class GameLobbyControl {
     // Method to create a new game lobby
     public void startGame() {
         GameRequest startGameRequest = new GameRequest(RequestCode.START_GAME);
+        // startGameRequest.setThreshold(200); // Set the desired threshold 
         try {
 			client.sendRequest(startGameRequest);
 		} catch (IOException e) {

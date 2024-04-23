@@ -87,8 +87,10 @@ public class Deck {
         {
 
             // Select a random card index.
-            index = (int)(Math.random() % this.getSizeOfDeck());
+            index = (int)(Math.random() * (this.getSizeOfDeck() - 1));
 
+            System.out.println(index);
+            
             // Get the card from the deck.
             card = this.cards.get(index);
 
