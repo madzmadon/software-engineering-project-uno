@@ -146,7 +146,7 @@ public class DatabaseTest {
 		
 		// Declare local variables.
 		String username = "Admin13";
-		String password = "APasswordThatIsFarTooLongToBeAccepted";
+		String password = "PasswordThatIsTooLong";
 		CreateAccountData data = new CreateAccountData();
 		
 		// Load the data.

@@ -204,6 +204,7 @@ public class Database {
 
     private boolean verifyCredentials(String username, String password)
     {
-    	return ((!username.isEmpty() && !password.isEmpty()) && (username.length() <= 32 && password.length() <= 32));    }
+    	return ((!username.isEmpty() && !password.isEmpty()) && (username.length() <= 32 && password.length() <= 16));
+    }
     
-	}
+}
