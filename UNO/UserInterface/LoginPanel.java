@@ -92,7 +92,7 @@ public LoginPanel(Driver driver)
       String username = usernameField.getText();
       String userPassword = passwordField.getText();
       
-      loginControl.login(username, userPassword);
+      
 
       // If loginResponse fails, and username + password is null
       if (username.isEmpty() || userPassword.isEmpty())
@@ -100,8 +100,7 @@ public LoginPanel(Driver driver)
         JOptionPane.showMessageDialog(null, "You must enter a username and password!", "Error!", JOptionPane.ERROR_MESSAGE);
       } else  //If loginResponse is successful
       {
-    	  //Display the GameManagerPanel if credentials match an existing user's
-    	  driver.showPanel(new GameManagerPanel(driver));
+    	  loginControl.login(username, userPassword);
       }
     }
     
