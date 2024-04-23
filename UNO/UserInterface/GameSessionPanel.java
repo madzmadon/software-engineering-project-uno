@@ -29,7 +29,11 @@ public class GameSessionPanel extends JPanel {
     public GameSessionPanel(Driver driver) {
         Client client = driver.getClient();
         gameSessionControl = new GameSessionControl(client);
+<<<<<<< HEAD
         // TODO: playerNamesAndHandCount Only show one player point of view with their cards, and then a list of player names with their card amount
+=======
+        // TODO: Instead of showing all player panels. Only show one player point of view with their cards, and then a list of player names with their card amount
+>>>>>>> 09c0f88e80612be86b6419b71c0e6d4818506f31
         
         setPreferredSize(new Dimension(1000, 800));
         setLayout(new BorderLayout());
