@@ -1,5 +1,6 @@
 package ClientCommunication;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +17,8 @@ public class GameSessionControl {
     private List<Card> discardPile = new ArrayList<>();
     private Deck deck;
 
-    public GameSessionControl(Client client, String lobbyId) {
+    public GameSessionControl(Client client) {
         this.client = client;
-        this.lobbyId = lobbyId;
         this.deck = new Deck(); // Initialize the deck
         deck.shuffle(); // Shuffle the deck
     }
@@ -58,7 +58,12 @@ public class GameSessionControl {
                 GameRequest playCardRequest = new GameRequest(RequestCode.PLAY_CARD);
                 playCardRequest.setCard(card);
 
-                client.sendRequest(playCardRequest);
+                try {
+					client.sendRequest(playCardRequest);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 discardPile.add(card);
                 nextTurn();
             } else {
@@ -74,7 +79,12 @@ public class GameSessionControl {
     public Card drawCard() {
         GameRequest drawCardRequest = new GameRequest(RequestCode.DRAW_CARD);
 
-        client.sendRequest(drawCardRequest);
+        try {
+			client.sendRequest(drawCardRequest);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         return deck.drawCard();
     }
@@ -84,7 +94,12 @@ public class GameSessionControl {
         if (player.getHand().size() == 1) {
             GameRequest announceUnoRequest = new GameRequest(RequestCode.ANNOUNCE_UNO);
 
-            client.sendRequest(announceUnoRequest);
+            try {
+				client.sendRequest(announceUnoRequest);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
             System.out.println(player.getName() + " called UNO!");
         } else {

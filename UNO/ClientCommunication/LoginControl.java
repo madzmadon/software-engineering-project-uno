@@ -23,11 +23,13 @@ public class LoginControl {
 
         // Attempt to send the login data to the server
         try {
-        	//DOUBLE CHECK IF NEEDED
             // Open connection if not already opened
             if (!client.isConnected()) {
                 client.openConnection();
             }
+
+            // Set isLoginResponse to true before sending the login request
+            client.isLoginResponse = true;
 
             // Send the login data to the server
             client.sendRequest(loginData);

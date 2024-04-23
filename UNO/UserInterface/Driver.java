@@ -32,12 +32,20 @@ public class Driver extends JFrame {
         revalidate();
         repaint();
     }
-
+    
+    public void sendStatusToPanel(String response) {
+    	JOptionPane.showMessageDialog(null, response, "Error!", JOptionPane.ERROR_MESSAGE);
+    }
+    
     public Client getClient() {
         // Return an instance of the Client class
         return client;
     }
 
+    public JPanel getCurrentPanel() {
+        return currentPanel;
+    }
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override

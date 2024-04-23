@@ -51,11 +51,9 @@ public class GameManagerPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                // Join an existing game session with the random lobby ID
-                gameManagerControl.startGame();
+                // Join an game
+                gameManagerControl.joinGame();
 
-                // Open the GameLobbyPanel
-                driver.showPanel(new GameLobbyPanel(driver));
             }
         });
         
@@ -64,9 +62,7 @@ public class GameManagerPanel extends JPanel {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	gameManagerControl.leaveGame();
-                // Show the StartUpPanel
-                driver.showPanel(new StartUpPanel(driver));
+            	gameManagerControl.logOut();
             }
         });
 
