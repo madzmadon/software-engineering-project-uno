@@ -8,7 +8,6 @@ import java.util.Properties;
 public class Database {
 
     private Connection connection;
-    private String key;
 
     public Database(String property_file_name)
     {
@@ -47,7 +46,6 @@ public class Database {
         url = properties.getProperty("url");
         username = properties.getProperty("user");
         password = properties.getProperty("password");
-        key = properties.getProperty("key");
 
         // Attempt to connect to the database.
         try
