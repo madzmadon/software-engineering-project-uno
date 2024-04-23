@@ -15,6 +15,7 @@ public class ServerGameController {
 
     private HashMap<ConnectionToClient, Player> players;
     private boolean gameInProgress;
+    private int currentIndex;
     private GameState state;
     private Deck deck;
 
@@ -27,9 +28,10 @@ public class ServerGameController {
         // Initialize data fields.
         this.server = server;
         this.players = new HashMap<>();
+        this.currentIndex = 0;
         this.gameInProgress = false;
         this.deck = new Deck();
-
+        
     }
 
     // Ensures that a user is valid.
@@ -58,17 +60,30 @@ public class ServerGameController {
 
         System.out.println("Receiving game request.");
 
-        // Determine the game request.
-        switch (request.getRequest())
+        // Ensure that the user is logged in.
+        if (this.server.getUsers().containsKey(caller))
         {
+        
+        	// Determine the game request.
+        	switch (request.getRequest())
+        	{
 
-            case JOIN_GAME -> this.handleJoinGame(caller);
-            case START_GAME -> this.handleGameStart(request, caller);
-            case START_SESSION -> this.handleSessionStart();
-            case PLAY_CARD -> this.handlePlayCard(request, caller);
-            case DRAW_CARD -> this.handleDrawCard(request, caller);
-            case ANNOUNCE_UNO -> this.handleAnnounceUno(request, caller);
-
+            	case JOIN_GAME -> this.handleJoinGame(caller);
+            	case START_GAME -> this.handleGameStart(request, caller);
+            	case START_SESSION -> this.handleSessionStart(caller);
+            	case PLAY_CARD -> this.handlePlayCard(request, caller);
+            	case DRAW_CARD -> this.handleDrawCard(request, caller);
+            	case ANNOUNCE_UNO -> this.handleAnnounceUno(request, caller);
+            	case LEAVE_GAME -> this.handleLeaveGame(caller);
+            	
+        	}
+        
+        } else
+        {
+        	
+        	// Send the fail message to the user.
+        	this.sendResponse(new GameResponse(ResponseCode.FAILED, null), caller);
+        	
         }
 
     }
@@ -109,20 +124,8 @@ public class ServerGameController {
 
         }
 
-        // Attempt to send the response to the user.
-        try
-        {
-
-            // Send the message to the user.
-            caller.sendToClient(response);
-
-        } catch (IOException exception)
-        {
-
-            // Display the error message to the user.
-            exception.printStackTrace();
-                
-        }
+        // Send the response to the player.
+        this.sendResponse(response, caller);
 
     }
 
@@ -133,25 +136,11 @@ public class ServerGameController {
         this.state = new GameState(this.server.getThreshold());
 
         // Ensure that enough players are present and that the calling user is verified.
-        if (this.server.getUsers().size() < 2 || !this.verifyPlayer(caller))
+        if (this.server.getUsers().size() < 2 || !this.verifyPlayer(caller) || this.gameInProgress)
         {
 
-            // Attempt to send a message to the user.
-            try {
-
-                // Send message to the user indicating that the number of users is too few.
-                caller.sendToClient(new GameResponse(ResponseCode.FAILED, null));
-
-            } catch (IOException exception)
-            {
-
-                // Display the error to the user.
-                exception.printStackTrace();
-
-                // Terminate the program.
-                System.exit(-1);
-
-            }
+            // Send the fail message to the user.
+        	this.sendResponse(new GameResponse(ResponseCode.FAILED, null), caller);
 
             return;
 
@@ -164,85 +153,141 @@ public class ServerGameController {
         System.out.println("State> Game Started");
 
         // Start the game session.
-        this.handleSessionStart();
+        this.handleSessionStart(caller);
 
     }
 
     // Handles starting a session.
-    private void handleSessionStart()
+    private void handleSessionStart(ConnectionToClient caller)
     {
 
-        // Reset the deck of cards.
-        this.deck.reset();
+    	// Ensure that a game is not already in progress.
+    	if (!this.gameInProgress)
+    	{
+    		
+    		// Send the fail message to the player.
+    		this.sendResponse(new GameResponse(ResponseCode.FAILED, null), caller);
+    		
+    	} else 
+    	{
+    	
+    		// Reset the current index.
+    		this.currentIndex = 0;
+    		
+    		// Reset the deck of cards.
+    		this.deck.reset();
 
-        // Iterate over the players and initialize their hands.
-        for (ConnectionToClient connection : this.getPlayerKeys())
-        {
+        	// Iterate over the players and initialize their hands.
+        	for (ConnectionToClient connection : this.getPlayerKeys())
+        	{
 
-            // Obtain the player from the 'players' map.
-            Player player = this.players.get(connection);
+        		// Obtain the player from the 'players' map.
+            	Player player = this.players.get(connection);
 
-            // Create the hand of the player.
-            ArrayList<Card> hand = new ArrayList<>();
+            	// Create the hand of the player.
+            	ArrayList<Card> hand = new ArrayList<>();
 
-            // Initialize the hand of the player.
-            for (int i = 0; i < 7; ++i)
-            {
+            	// Initialize the hand of the player.
+            	for (int i = 0; i < 7; ++i)
+            	{
 
-                // Add a card to the hand of the current player.
-                hand.add(deck.drawCard());
+                	// Add a card to the hand of the current player.
+                	hand.add(deck.drawCard());
 
-            }
+            	}
 
-            // Set the hand to the player object.
-            player.setHand(hand);
+            
+            	// Set the hand to the player object.
+            	player.setHand(hand);
 
-            // Update the player object in the 'players' map.
-            this.players.put(connection, player);
+            	// Update the player object in the 'players' map.
+            	this.players.put(connection, player);
 
-            // Attempt to send the player object to the associated client.
-            try {
+            	// Attempt to send the player object to the associated client.
+            	try {
 
-                // Send the player object to the associated client.
-                connection.sendToClient(player);
+                	// Send the player object to the associated client.
+                	connection.sendToClient(player);
 
-            } catch (IOException exception)
-            {
+            	} catch (IOException exception)
+            	{
 
-                // Display the error message to the user.
-                exception.printStackTrace();
+                	// Display the error message to the user.
+                	exception.printStackTrace();
 
-                // Terminate the program.
-                System.exit(-1);
+            	}
 
-            }
+        	}
 
-        }
+        	// DEBUG: Displays a message indicating that the game session has started.
+        	System.out.println("State> Session Started");
 
-        // DEBUG: Displays a message indicating that the game session has started.
-        System.out.println("State> Session Started");
-
+    	}
+        
     }
 
     // Handles playing a card.
     private void handlePlayCard(GameRequest request, ConnectionToClient caller)
     {
+    	
+    	// Obtain the card from the request.
+		Card card = request.getCard();
+    	
+    	// Ensure that the user is a player and the card matches the top card, but is not matching and draw two or four.
+    	if (this.players.containsKey(caller) && card.cardMatches(this.state.getTopCard()) && !((card.getFaceValue() == this.state.getTopCard().getFaceValue()) && (card.getFaceValue() == CardFaceValue.PLUS_FOUR || card.getFaceValue() == CardFaceValue.PLUS_TWO)))
+    	{
 
-        // Obtain the card from the request.
-        Card card = request.getCard();
+    		// Get the player object.
+    		Player player = this.players.get(caller);
+    		
+            // Send the top card back to the deck.
+            this.deck.returnToDeck(this.state.getTopCard());
 
-        // Determine the type of card being played.
-        switch (card.getFaceValue())
-        {
+            // Set the top card to that of the player's.
+            this.state.setTopCard(request.getCard());
+            
+            // Remove the card from the player's hand.
+            ArrayList<Card> hand = player.getHand();
+            hand.remove(card);
+            player.setHand(hand);
+            
+            // Create the response.
+            GameResponse response = new GameResponse(ResponseCode.SUCCESS, player);
+    		
+        	// Determine the type of card being played.
+        	switch (card.getFaceValue())
+        	{
 
-            case SKIP -> handleSkipCard();
-            case REVERSE -> handleReverseCard();
-            case PLUS_TWO -> handleDrawTwo();
-            case PLUS_FOUR -> handleDrawFour();
-            case WILDCARD -> handleWildCard();
-            default -> handleNumberCard(request, caller);
+            	case SKIP -> handleSkipCard();
+            	case REVERSE -> handleReverseCard();
+            	case PLUS_TWO -> handleDrawTwo();
+            	case PLUS_FOUR -> handleDrawFour(request, caller);
+            	case WILDCARD -> handleWildCard(request, caller);
 
-        }
+        	}        	
+        	
+        	// Determine if the player has run out of cards.
+        	if (player.getHand().size() <= 0)
+        	{
+        		
+        		// The session has complete.
+        		this.handleSessionEnds(player);
+        		
+        	} else 
+        	{
+        	
+        		// Send the response to the player.
+        		this.sendResponse(response, caller);
+        	
+        	}
+        	
+    	} else 
+    	{
+    		
+    		// Send the response to the player.
+    		this.sendResponse(new GameResponse(ResponseCode.FAILED, null), caller);
+    		
+    	}
 
     }
 
@@ -281,23 +326,8 @@ public class ServerGameController {
 
         }
 
-        // Attempt to send the response to the user.
-        try
-        {
-
-            // Send the response to the player.
-            caller.sendToClient(response);
-
-        } catch (IOException exception)
-        {
-
-            // Display the error message to the user.
-            exception.printStackTrace();
-
-            // Terminate the program.
-            System.exit(-1);
-
-        }
+        // Send the response to the user.
+        this.sendResponse(response, caller);
 
     }
 
@@ -378,23 +408,9 @@ public class ServerGameController {
         // Set the response value.
         response = new GameResponse(ResponseCode.SUCCESS, player);
 
-        // Attempt to send the game response to the player.
-        try
-        {
-
-            caller.sendToClient(response);
-
-        } catch (IOException exception)
-        {
-
-            // Display the error message to the user.
-            exception.printStackTrace();
-
-            // Terminate the program.
-            System.exit(-1);
-
-        }
-
+        // Send the response to the client.
+        this.sendResponse(response, caller);
+        
     }
 
     // Handles the game ending.
@@ -404,10 +420,41 @@ public class ServerGameController {
         System.out.println("Game has ended.");
             
     }
+    
+    public void handleLeaveGame(ConnectionToClient caller)
+    {
+    	
+    	// Obtain the player from the 'players' list.
+    	Player player = this.players.get(caller);
+    	
+    	// Remove the player from the list.
+    	this.players.remove(player);
+    	
+    	// Deallocate all cards within the player's hand.
+    	for (Card card : player.getHand())
+    	{
+    		
+    		// Return the card to the deck.
+    		this.deck.returnToDeck(card);
+    		
+    	}
+    	
+    	// Remove the user from the logged in users.
+    	this.server.logout(this.server.getUsers().get(caller));
+    	
+    	// Determine if the number of remaining players is less then the minimum number of players.
+    	if (this.players.size() < this.MIN_PLAYER_COUNT)
+    	{
+    		
+    		// Terminate the game.
+    		this.eventGameEnds();
+    		
+    	}
+    	
+    }
 
     /*
      * Handlers for specific cards:
-     *  - handleNumberCard   :   Handles basic number cards.
      *  - handleSkipCard     :   Handles skip cards.
      *  - handleReverseCard  :   Handles reverse cards.
      *  - handleDrawTwo      :   Handles draw two cards.
@@ -415,72 +462,249 @@ public class ServerGameController {
      *  - handleWildCard     :   Handles wildcards.
     */
 
-    private void handleNumberCard(GameRequest request, ConnectionToClient caller)
-    {
-
-        // Declare local variables.
-        GameResponse response = null;
-
-        // Ensure that the player has the card in their hand and that the card matches the top card.
-        if (this.state.getTopCard().cardMatches(request.getCard()))
-        {
-
-            // Send the top card back to the deck.
-            this.deck.returnToDeck(this.state.getTopCard());
-
-            // Set the top card to that of the player's.
-            this.state.setTopCard(request.getCard());
-
-        } else
-        {
-
-            // Set the response to fail.
-            response = new GameResponse(ResponseCode.FAILED, this.players.get(caller));
-
-        }
-
-        // Attempt to send the response to the user.
-        try
-        {
-
-            // Send the response to the player.
-            caller.sendToClient(response);
-
-        } catch (IOException exception)
-        {
-
-            // Display the error message to the user.
-            exception.printStackTrace();
-
-        }
-
-    }
-
     private void handleSkipCard()
     {
 
-
+    	// Seek to the player after the next player.
+    	this.changePlayerTurn();
+    	this.changePlayerTurn();
 
     }
 
     private void handleReverseCard()
     {
 
+    	// Flip the value of flag 'forward'.
+    	this.state.isForward(!this.state.isForward());
+    	
     }
 
     private void handleDrawTwo()
     {
-
+    	
+    	// Seek to the next player.
+    	this.changePlayerTurn();
+    	
+    	// Get the current player.
+    	Player player = this.getCurrentPlayer();
+    	
+    	// Add two cards to the current player.
+    	ArrayList<Card> hand = player.getHand();
+    	hand.add(this.deck.drawCard());
+    	hand.add(this.deck.drawCard());
+    	player.setHand(hand);
+    	
+    	// Attempt to send the player object to the player.
+    	try
+    	{
+    		
+    		// Send the player object to the player.
+    		this.getAssociatedConnection(player).sendToClient(player);
+    		
+    	} catch (IOException exception)
+    	{
+    		
+    		// Display the error message.
+    		exception.printStackTrace();
+    		
+    	}
+    	
     }
 
-    private void handleDrawFour()
+    private void handleDrawFour(GameRequest request, ConnectionToClient caller)
+    {
+    	
+    	// Declare local variables.
+    	Player player = null;
+    
+    	// Ensure that the card color is set.
+    	if (request.getCardColor() == CardColor.NONE)
+    	{
+    	
+    		// Seek to the next player.
+    		this.changePlayerTurn();
+    	
+    		// Get the next player.
+    		player = this.getCurrentPlayer();
+    	
+    		// Add four cards to the current player.
+    		ArrayList<Card> hand = player.getHand();
+    		hand.add(this.deck.drawCard());
+    		hand.add(this.deck.drawCard());
+    		hand.add(this.deck.drawCard());
+    		hand.add(this.deck.drawCard());
+    		player.setHand(hand);
+    	
+    		// Set the top card in the state to null and the color to the request color.
+    		this.state.setTopCard(null);
+    		this.state.setTopCardColor(request.getCardColor());
+    	
+    		// Attempt to send the player object to the player.
+    		try
+    		{
+    		
+    			// Send the player object to the player.
+    			this.getAssociatedConnection(player).sendToClient(player);
+    		
+    		} catch (IOException exception)
+    		{
+    		
+    			// Display the error message.
+    			exception.printStackTrace();
+    		
+    		}
+    	
+    	} else
+    	{
+    		
+    		// Send the fail message to the player.
+    		this.sendResponse(new GameResponse(ResponseCode.FAILED, null), caller);
+    		
+    	}
+    	
+    }
+
+    private void handleWildCard(GameRequest request, ConnectionToClient caller)
     {
 
+    	// Ensure that the card color is set.
+    	if (request.getCardColor() != CardColor.NONE)
+    	{
+    		
+    		// Set the top card to null and the top card color to the request color.
+    		this.state.setTopCard(null);
+    		this.state.setTopCardColor(request.getCardColor());
+    		
+    		
+    		
+    	} else
+    	{
+    	
+    		// Send the fail message to the player.
+    		this.sendResponse(new GameResponse(ResponseCode.FAILED, null), caller);
+    		
+    	}
+    	
     }
-
-    private void handleWildCard()
+    
+    // Sum all cards from the other players and add the amount to the player's score.
+	private void handleSessionEnds(Player winner)
     {
-
+    	
+    	// Declare local variables.
+		int sum = 0;
+		
+		// Iterate over every player within the game.
+		for (Player current : this.players.values())
+		{
+			
+			// Add the sum of the cards in the current player's hand to 'sum'.
+			sum += current.getSumOfCards();
+			
+		}
+		
+		// Add the value of 'sum' to the score of the winning player.
+		winner.setScore(winner.getScore() + sum);
+		
+		// Determine if the winner of the round has exceeded the threshold.
+		if (winner.getScore() > this.server.getThreshold())
+		{
+				 
+			// Broadcast the name of the winner to all players.
+			this.server.sendToAllClients(winner);
+		
+			// handle game ends event.
+			this.eventGameEnds();
+			
+			return;
+			
+		}
+    	
+		// Broadcast the waiting for next session response.
+		this.server.sendToAllClients(new GameResponse(ResponseCode.WAIT_FOR_NEXT_SESSION, null));
+		
     }
 
+    // Changes the current player.
+    private void changePlayerTurn()
+    {
+    	
+    	// Determine if the turn is increasing or decreasing.
+    	if (this.state.isForward())
+    	{
+    		
+    		// Increase the current index.
+    		++this.currentIndex;
+    		
+    	} else 
+    	{
+    		
+    		// Decrease the current index.
+    		--this.currentIndex;
+    		
+    	}
+    	
+    	// Ensure that the current index is not out of range.
+    	this.currentIndex = this.currentIndex % this.players.size();
+    	
+    }
+    
+    // Returns the current player object.
+    private Player getCurrentPlayer()
+    {
+    	
+    	ArrayList<Player> player_queue = new ArrayList<>(this.players.values());
+    	
+    	return player_queue.get(currentIndex);
+    	
+    }
+    
+    private ConnectionToClient getAssociatedConnection(Player player)
+    {
+    
+    	// Declare local variables.
+    	ConnectionToClient connection = null;
+    	
+    	// Iterate over the players.
+    	for (ConnectionToClient conn : this.players.keySet())
+    	{
+    		
+    		// Check if the current player is the same as the iteration
+    		if (player.getPlayerName().equals(this.players.get(conn).getPlayerName()))
+    		{
+    			
+    			// Set the connection.
+    			connection = conn;
+    			
+    			break;
+    			
+    		}
+    		
+    	}
+    	
+    	return connection;
+    	
+    }
+    
+    // Utility method to send game response objects to a user. 
+    private void sendResponse(GameResponse response, ConnectionToClient caller)
+    {
+    	
+    	// Attempt to send the response to the user.
+    	try
+    	{
+    		
+    		// Send the message to the user.
+    		caller.sendToClient(response);
+    		
+    	} catch (IOException exception)
+    	{
+    		
+    		// Display the error message to the user.
+    		exception.printStackTrace();
+    		
+    	}
+    	
+    }
+    
 }

@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class GameRequest implements Serializable {
 
     private RequestCode request;
+    private CardColor color;
     private Card card;
 
     public GameRequest(RequestCode request)
@@ -28,6 +29,18 @@ public class GameRequest implements Serializable {
     public Card getCard()
     {
         return card;
+    }
+    
+    // Sets the color of the top card. Only applicable when player plays a wildcard.
+    public void setCardColor(CardColor color)
+    {
+    	this.color = color;
+    }
+    
+    // Returns the color of the new top card. Only applicable when the player plays a wildcard.
+    public CardColor getCardColor()
+    {
+    	return color;
     }
 
 }

@@ -16,10 +16,12 @@ public class TestClient extends AbstractClient {
 	private final static int PORT = 12345;
 	public static Scanner in;
 	private Player player;
+	private boolean locked;
 	
 	public TestClient(String host)
 	{
 		super(host, PORT);
+		locked = false;
 	}
 
 	@Override
@@ -43,26 +45,26 @@ public class TestClient extends AbstractClient {
 			// Convert the object to an instance of 'Player'.
 			this.player = (Player)o;
 			
-			// Display the player name.
-			System.out.println("Player Name: " + this.player.getPlayerName());
-			
-			// Display the number of cards within their hand.
-			System.out.println("Size of Hand: " + player.getHand().size());
-			
-			// Display the cards within the player's hand.
-			for (Card card : player.getHand())
-			{
-				
-				// Display the URL of the current card.
-				System.out.println(card.getCardURL());
-				
-			}
+			// Display information about the player.
+			this.displayPlayerInfo();
 			
 		} else if (o instanceof GameResponse)
 		{
 			
 			// Convert the object to an instance of 'GameResponse'.
 			GameResponse response = (GameResponse)o;
+			
+			// Check for a player object.
+			if (response.getPlayer() != null)
+			{
+				
+				// Set the 'player' object to that of the response.
+				this.player = response.getPlayer();
+				
+				// Display information about the player.
+				this.displayPlayerInfo();
+				
+			}
 			
 			// Display the game response code.
 			System.out.println("Response: " + response.getResponse().name());
@@ -74,8 +76,33 @@ public class TestClient extends AbstractClient {
 			
 		}
 		
-		//Run the UI.
-		this.UI();
+		if (!locked)
+		{
+		
+			//Run the UI.
+			this.UI();
+		
+		}
+		
+	}
+	
+	public void displayPlayerInfo()
+	{
+		
+		// Display the player name.
+		System.out.println("Player Name: " + this.player.getPlayerName());
+					
+		// Display the number of cards within their hand.
+		System.out.println("Size of Hand: " + player.getHand().size());
+					
+		// Display the cards within the player's hand.
+		for (Card card : player.getHand())
+		{
+						
+			// Display the URL of the current card.
+			System.out.println(card.getCardURL());
+						
+		}
 		
 	}
 	
@@ -105,9 +132,13 @@ public class TestClient extends AbstractClient {
 		GameRequest request = null;
 		Card card = null;
 		
+		locked = true;
+		
 		// Prompt the user for a command.
 		System.out.print("\n> ");
 		cmd = in.nextLine();
+		
+		locked = false;
 		
 		// Convert the command to all upper case.
 		cmd = cmd.toUpperCase();
@@ -147,6 +178,33 @@ public class TestClient extends AbstractClient {
 			
 			// Set the request to draw a card.
 			request = new GameRequest(RequestCode.DRAW_CARD);
+			
+		} else if (cmd.equals("LEAVE GAME"))
+		{
+			
+			// Set the request to leave game.
+			request = new GameRequest(RequestCode.LEAVE_GAME);
+			
+		} else if (cmd.equals("EXIT"))
+		{
+			
+			// Attempt to disconnect from the server.
+			try
+			{
+			
+				// Disconnect from the server.
+				this.closeConnection();
+			
+			} catch (IOException exception)
+			{
+				
+				// Display the error message to the user.
+				exception.printStackTrace();
+				
+			}
+			
+			// Terminate the program.
+			System.exit(0);
 			
 		}
 		

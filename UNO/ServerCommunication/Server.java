@@ -57,12 +57,24 @@ public class Server extends AbstractServer {
             }else if (database.verifyAccount(data))
             {
 
-                // Add the client to the logged in users.
-                this.users.put(connectionToClient, data);
+            	// Determine if the user is already logged in.
+            	if (!this.alreadyLoggedIn(data))
+            	{
+            	
+            		// Add the client to the logged in users.
+            		this.users.put(connectionToClient, data);
 
-                // Set the variable 'response' to success.
-                response = AccountResponse.SUCCESS;
+                	// Set the variable 'response' to success.
+                	response = AccountResponse.SUCCESS;
 
+            	} else 
+            	{
+            		
+            		// Set the variable 'response' to fail.
+            		response = AccountResponse.FAIL;
+            		
+            	}
+            	
             } else
             {
 
@@ -132,7 +144,7 @@ public class Server extends AbstractServer {
 
             }
 
-        } else if ((o instanceof GameRequest) && (this.users.containsKey(connectionToClient)))
+        } else if (o instanceof GameRequest)
         {
 
             // Convert the object to a 'GameRequest' object.
@@ -170,6 +182,46 @@ public class Server extends AbstractServer {
         this.users = sanitized_users;
 
         return sanitized_users;
+        
+    }
+    
+    public boolean alreadyLoggedIn(LoginData data)
+    {
+    	
+    	// Declare local variables.
+    	boolean flag = false;
+    	
+    	// Iterate over the logged in users.
+    	for (LoginData user : this.getUsers().values())
+    	{
+    		
+    		// Determine if the current user is the same as 'data'.
+    		if (user.getUsername().equals(data.getUsername()))
+    		{
+    			
+    			// Set the variable 'flag' to true.
+    			flag = true;
+    			
+    		}
+    		
+    	}
+    	
+    	return flag;
+    	
+    }
+    
+    public void logout(LoginData data)
+    {
+    	
+    	// Ensure that the user is already logged in.
+    	if (alreadyLoggedIn(data))
+    	{
+    		
+    		// remove the user from the 'users' list.
+    		this.users.remove(this.users.get(data));
+    		
+    	}
+    	
     }
 
     // Returns the threshold of points to win.
@@ -194,10 +246,21 @@ public class Server extends AbstractServer {
             return;
 
         }
-
+        
         // Obtain the threshold from the user.
         threshold = Integer.parseInt(args[0]);
-
+        
+        // Ensure that the threshold is at minimum 200 and maximum of 600.
+        if (threshold < 200 || threshold > 600)
+        {
+        	
+        	// Display a message indicating that the threshold is out of range.
+        	System.out.println("Out of range - The threshold amount must be between 200 and 600 inclusive.");
+        	
+        	return;
+        	
+        }
+        
         // Declare variables.
         server = new Server(threshold);
 
