@@ -133,3 +133,4 @@ public LoginPanel(Driver driver)
   add(loginButtonsPanel, BorderLayout.SOUTH);
   
 }
+}

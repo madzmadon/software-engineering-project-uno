@@ -147,7 +147,7 @@ public class Client extends AbstractClient {
         //TODO: Update the game state in the UI
         // create a GameStatePanel and update its components
     	//Figure out how to properly do this
-        GameSessionPanel gameStatePanel = new GameSessionPanel(gameState);
+        GameSessionPanel gameStatePanel = new GameSessionPanel(driver);
         driver.showPanel(gameStatePanel);
     }
 
@@ -185,5 +185,19 @@ public class Client extends AbstractClient {
         dialog.setLocationRelativeTo(frame);
         dialog.setVisible(true);
     }
+    
+    public boolean receiveLoginResponse() {
+        // This should be processed dynamically with actual server responses
+        return true;
+    }
+
+    public boolean receiveAccountCreationResponse() {
+        // This should be processed dynamically with actual server responses
+        return true; 
+    }
+
+    public Object receiveLobbyStatus() {
+        // This should be updated dynamically from the server messages
+        return "Lobby status updated";
     }
 }

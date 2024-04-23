@@ -31,7 +31,7 @@ public class GameLobbyControl {
         System.out.println("Start game requested.");
     }
 
-    //TODO: LEAVE GAME SHOULD LOG YOU OUT
+    //TODO: LEAVE GAME SHOULD LOG YOU OUT ADD FUNCTIONALITY TO SERVER
     // Method to leave a game lobby
     public void leaveGame() {
     	GameRequest leaveGameRequest = new GameRequest(RequestCode.LEAVE_GAME);
