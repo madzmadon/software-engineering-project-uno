@@ -72,23 +72,11 @@ public class CreateAccountPanel extends JPanel {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
                 String confirmPassword = new String(confirmPasswordField.getPassword());
-               
-                if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                	JOptionPane.showMessageDialog(null, "All fields must have a value.", "Error", JOptionPane.ERROR_MESSAGE);
-                } else if (!password.equals(confirmPassword)) {
+
+                if (password.equals(confirmPassword)) {
+                    createAccountControl.createAccount(username, password);
+                } else {
                     JOptionPane.showMessageDialog(null, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
-                }else {
-                    // Call the createAccount method of CreateAccountControl
-                     createAccountControl.createAccount(username, password);
-                     driver.showPanel(new StartUpPanel(driver));
-//                    if (response) {
-//                        JOptionPane.showMessageDialog(null, "Account created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-//                        
-//                    } else if (!response && (!username.isEmpty() || !password.isEmpty() || !confirmPassword.isEmpty())){
-//                        JOptionPane.showMessageDialog(null, "Please enter values in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
-//                    } else if (!response) {
-//                        JOptionPane.showMessageDialog(null, "Account creation failed. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-//                    }
                 }
             }
         });

@@ -1,11 +1,6 @@
 package ClientCommunication;
 
-import java.io.IOException;
-
 import Database.CreateAccountData;
-import GameLogic.GameRequest;
-import GameLogic.RequestCode;
-import ServerCommunication.AccountResponse;
 
 public class CreateAccountControl {
 
@@ -16,27 +11,19 @@ public class CreateAccountControl {
     }
 
     public void createAccount(String username, String password) {
-
         // Send the account creation request with the new username and password
+        CreateAccountData accountData = new CreateAccountData();
+        accountData.setUsername(username);
+        accountData.setPassword(password);
 
-            //client.openConnection(); // Open connection if not already opened
+        // Set isLoginResponse to false before sending the account creation request
+        client.isLoginResponse = false;
 
-            CreateAccountData accountData = new CreateAccountData();
-            accountData.setUsername(username);
-            accountData.setPassword(password);
-//            try {
+        try {
             client.sendRequest(accountData);
-//            } catch(IOException exception) {
-//            	exception.printStackTrace();
-//            }
-      
-    }
-    // ERROR WHEN CREATING ACCOUNT REGARDING A METHOD MISSING CALLED THIS
-    public void receiveAccountCreationResponse(AccountResponse response) {
-        if (response == AccountResponse.SUCCESS) {
-        	System.out.println("Account creation success: " + response.name());
-        } else {
-            System.out.println("Account creation failed: " + response.name());
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception, e.g., display an error message
         }
     }
 

@@ -1,5 +1,6 @@
 package ClientCommunication;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +21,28 @@ public class GameLobbyControl {
     //TODO: DOUBLE CHECK ON START GAME WITH MULTIPLE PEOPLE BUTTON PRESSING START GAME
     // Method to create a new game lobby
     public void startGame() {
-        GameRequest createLobbyRequest = new GameRequest(RequestCode.START_GAME);
-        client.sendRequest(createLobbyRequest);
-        System.out.println("Game start requested.");
+        GameRequest startGameRequest = new GameRequest(RequestCode.START_GAME);
+        try {
+			client.sendRequest(startGameRequest);
+		} catch (IOException e) {
+			System.out.println("Error trying to start game.");
+			e.printStackTrace();
+		}
+        System.out.println("Start game requested.");
     }
 
+    //TODO: LEAVE GAME SHOULD LOG YOU OUT
     // Method to leave a game lobby
-    public void logOut(String lobbyId) {
-        GameRequest leaveLobbyRequest = new GameRequest(RequestCode.LOG_OUT);
-        client.sendRequest(leaveLobbyRequest);
-        System.out.println("Requested to leave lobby and logout.");
+    public void leaveGame() {
+    	GameRequest leaveGameRequest = new GameRequest(RequestCode.LEAVE_GAME);
+        try {
+			client.sendRequest(leaveGameRequest);
+		} catch (IOException e) {
+			System.out.println("Error trying to leave game.");
+			e.printStackTrace();
+		}
+        System.out.println("Leave game requested.");
+        
     }
 
 }

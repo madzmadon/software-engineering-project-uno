@@ -4,36 +4,45 @@ import Database.LoginData;
 import GameLogic.*;
 import ServerCommunication.AccountResponse;
 import UserInterface.Driver;
+import UserInterface.GameLobbyPanel;
+import UserInterface.GameManagerPanel;
+import UserInterface.GameSessionPanel;
+import UserInterface.StartUpPanel;
 import ocsf.client.AbstractClient;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 public class Client extends AbstractClient {
 
     private final static int PORT = 12345;
     private final static String ADDRESS = "localhost";
     private Driver driver;
+	public boolean isLoginResponse;
     
     public Client(Driver driver) {
         super(ADDRESS, PORT);
         this.driver = driver;
     }
-
+    
     @Override
     protected void handleMessageFromServer(Object o) {
         // Determine the type being returned from the server.
-        if (o instanceof AccountResponse) {
-            // Convert the object to an 'AccountResponse' object.
-            AccountResponse response = (AccountResponse) o;
-
-            System.out.println("Account Response: " + response.name());
-            
-            // Call the processAccountCreationResponse method
-            processAccountCreationResponse(response);
-        } else if (o instanceof GameResponse) {
-        	//SUCCESS OR FAIL
-        	//TODO: messages for all panels
-            System.out.println("Server responded with a game response");
+    	if (o instanceof AccountResponse) {
+    	    AccountResponse response = (AccountResponse) o;
+    	    handleAccountResponse(response); 
+    	} else if (o instanceof GameResponse) {
+    		GameResponse response = (GameResponse) o;
+    		handleGameResponse(response);
         } else if (o instanceof GameState) {
         	//TODO: top card (on discardPile) update image, player hand
         	//TODO: UPDATE GAMESTATE OBJECT WITH ITS UPDATED DATA
@@ -46,6 +55,12 @@ public class Client extends AbstractClient {
         	//TODO:CREATE AND ADD A NEW BUTTON TO LOBBY PANEL CALLED "Return to Menu"
             System.out.println("winner received.");
         }
+//        else if (o instanceof List) {
+//    	    List<String> players = (List<String>) o;
+//    	    gameLobbyControl.updateLobbyPlayers(players);
+//    	    driver.showPanel(new GameLobbyPanel(driver));
+//    	    gameLobbyPanel.updateNamesAndScores(players);
+//    	}
     }
 
     @Override
@@ -64,77 +79,9 @@ public class Client extends AbstractClient {
             exception.printStackTrace();
         }
     }
-// public class Client extends AbstractClient {
 
-//     public Client(String host, int port) {
-//         super(host, port);
-//     }
-
-//     @Override
-//     protected void handleMessageFromServer(Object msg) {
-//         // Process message received from the server
-//         System.out.println("Received from server: " + msg);
-//         handleResponse(msg);
-//     }
-
-//     @Override
-//     protected void connectionEstablished() {
-//         // Called when a connection to the server has been established
-//         System.out.println("Connection established with the server.");
-//     }
-
-//     @Override
-//     protected void connectionClosed() {
-//         // Called when the connection to the server is closed
-//         System.out.println("Connection closed.");
-//     }
-
-//     public void sendRequest(Object request) {
-//         // Send a request to the server
-//         try {
-//             sendToServer(request);
-//         } catch (IOException e) {
-//             System.err.println("Error sending request to server: " + e.getMessage());
-//             e.printStackTrace();
-//         }
-//     }
-
-//     private void handleResponse(Object response) {
-//         // Handle responses from the server here
-//         // This method now serves as a router to process different kinds of responses
-//         System.out.println("Handling server response: " + response);
-//         // You can extend this method to handle different types of responses differently
-//     }
-
-//     // Your simulation methods would now be redundant since you'd be receiving real responses
-//     // You can replace the following methods with real implementations
-//     public boolean receiveLoginResponse() {
-//         // This should be processed dynamically with actual server responses
-//         return true;
-//     }
-
-//     public boolean receiveAccountCreationResponse() {
-//         // This should be processed dynamically with actual server responses
-//         return true; 
-//     }
-
-//     public Object receiveGameState() {
-//         // This should be updated dynamically from the server messages
-//         return "Game state updated";
-//     }
-
-//     public Object receiveLobbyStatus() {
-//         // This should be updated dynamically from the server messages
-//         return "Lobby status updated";
-//     }
-// }
-
-    public void sendRequest(Object request) {
-        try {
-            sendToServer(request);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void sendRequest(Object request) throws IOException {
+        sendToServer(request);
     }
 
     public Object receiveGameState() {
@@ -142,35 +89,101 @@ public class Client extends AbstractClient {
         return new Object();
     }
     
-    public void processAccountCreationResponse(AccountResponse response) {
-        if (response == AccountResponse.SUCCESS) {
-        	System.out.println("Account creation success: " + response.name());
-        } else {
-            System.out.println("Account creation failed: " + response.name());
+    private void handleAccountResponse(AccountResponse response) {
+        String status;
+        System.out.println("Account Response: " + response.name());
+        switch (response) {
+            case SUCCESS:
+                if (isLoginResponse) {
+                    status = "Login successful.";
+                    driver.showPanel(new GameManagerPanel(driver));
+                } else {
+                    status = "Account creation successful.";
+                    driver.showPanel(new StartUpPanel(driver));
+                }
+                break;
+            case ACCOUNT_NOT_EXISTENT:
+                status = "This account does not exist. Please create an account.";
+                break;
+            case INVALID_CREDENTIALS:
+                status = "Please verify your passwords match and all fields have values.";
+                break;
+            case ALREADY_EXISTS:
+                status = "This username already exists. Please log in or use a different username.";
+                driver.showPanel(new StartUpPanel(driver));
+                break;
+            default:
+                status = "Unknown account response.";
+                break;
+        }
+        driver.sendStatusToPanel(status);
+    }
+    
+    private void handleGameResponse(GameResponse response) {
+        if (response.getResponse() == ResponseCode.SUCCESS) {
+            // Handle successful game start/join
+            System.out.println("Game started/joined successfully.");
+
+            // Determine the current panel and open the respective panel on success
+            JPanel currentPanel = driver.getCurrentPanel();
+            if (currentPanel instanceof StartUpPanel) {
+                driver.showPanel(new GameManagerPanel(driver));
+            } else if (currentPanel instanceof GameManagerPanel) {
+                driver.showPanel(new GameLobbyPanel(driver));
+            } else if (currentPanel instanceof GameLobbyPanel) {
+                driver.showPanel(new GameSessionPanel(driver));
+            } else if (currentPanel instanceof GameSessionPanel) {
+                driver.showPanel(new GameLobbyPanel(driver));
+            }
+            
+        } else if (response.getResponse() == ResponseCode.FAILED) {
+            // Handle failed game start/join
+            System.out.println("Failed to start/join game.");
+            JOptionPane.showMessageDialog(null, "Failed to start/join game.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
-    //ADD A METHOD TO RETURN SUCCESS OR FAILURES FOR REQUESTS TO PANELS
+    private void handleGameStateUpdate(GameState gameState) {
+        //TODO: Update the game state in the UI
+        // create a GameStatePanel and update its components
+    	//Figure out how to properly do this
+        GameSessionPanel gameStatePanel = new GameSessionPanel(gameState);
+        driver.showPanel(gameStatePanel);
+    }
 
-    //    public static void main(String[] args) {
-    //
-    //        // Declare variables.
-    //     	Client client = new Client();
-    //
-    //        // Attempt to connect to the server.
-    //        try
-    //        {
-    //
-    //            // Connect to the server.
-    //            client.openConnection();
-    //
-    //        } catch (IOException exception)
-    //        {
-    //
-    //            // Display the exception information to the user.
-    //            exception.printStackTrace();
-    //
-    //        }
-    //
-    //    }
+    private void handlePlayerUpdate(Player player) {
+        //TODO:  Update the player information in the UI
+        // update the player's hand, score, or other relevant information
+    	//Maybe separate PlayerPanel from gamesessionpanel
+//        PlayerPanel playerPanel = new PlayerPanel(player);
+//        driver.showPanel(playerPanel);
+    }
+
+    private void handleWinnerAnnouncement(String winner) {
+        // Create a JFrame to hold the custom dialog
+        JFrame frame = new JFrame("Game Over");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Create a JButton
+        JButton button = new JButton("OK");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                driver.showPanel(new GameManagerPanel(driver));
+            }
+        });
+
+        // Create a JPanel to hold the button
+        JPanel panel = new JPanel();
+        panel.add(button);
+
+        // Create a custom dialog
+        JDialog dialog = new JDialog(frame, "Game Over", true);
+        dialog.setLayout(new BorderLayout());
+        dialog.add(new JLabel("The winner is: " + winner), BorderLayout.CENTER);
+        dialog.add(panel, BorderLayout.SOUTH);
+        dialog.setSize(300, 150);
+        dialog.setLocationRelativeTo(frame);
+        dialog.setVisible(true);
+    }
+    }
 }

@@ -1,5 +1,7 @@
 package ClientCommunication;
 
+import java.io.IOException;
+
 import GameLogic.GameRequest;
 import GameLogic.RequestCode;
 
@@ -12,21 +14,30 @@ public class GameManagerControl {
         this.client = client;
     }
 
-    //UPDATE NAME TO RELFECT REQUEST
-    // Method to start a new game
-    public void startGame() {
+    // Method to join a new game
+    public void joinGame() {
         GameRequest startSessionRequest = new GameRequest(RequestCode.JOIN_GAME);
-        client.sendRequest(startSessionRequest);
+        try {
+			client.sendRequest(startSessionRequest);
+		} catch (IOException e) {
+			System.out.println("Error trying to join game.");
+			e.printStackTrace();
+		}
         System.out.println("Join game requested");
     }
-    //UPDATE NAME TO REFLECT REQUEST, CREATE HANDLING THE UI TO UPDATE A PLAYER LEAVING
-    // Method to end the current game
-    public void leaveGame() {
+
+    // Method to leave and log out
+    public void logOut() {
         if (gameLobby != null) {
-        	//NEED A REQUEST TO LOG USER OUT AND REMOVE THEM FROM SESSION
-            GameRequest endSessionRequest = new GameRequest(RequestCode.LOG_OUT);
-            client.sendRequest(endSessionRequest);
-            System.out.println("Left game.");
+        	//TODO: Possibly LOG_OUT instead of LEAVE_GAME
+            GameRequest leaveGameRequest = new GameRequest(RequestCode.LEAVE_GAME);
+            try {
+				client.sendRequest(leaveGameRequest);
+			} catch (IOException e) {
+				System.out.println("Error logging out.");
+				e.printStackTrace();
+			}
+            System.out.println("Log out requested.");
         }
     }
 
