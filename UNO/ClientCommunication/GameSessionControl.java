@@ -51,6 +51,7 @@ public class GameSessionControl {
     }
 
     //TODO: Return game request ... LAST CARD PLAYED: Check for server to check if last card
+<<<<<<< Updated upstream
     public void playCard(Player player, Card card) {
         if (isValidMove(card)) {
             boolean removed = player.playCard(card);
@@ -73,13 +74,23 @@ public class GameSessionControl {
         } else {
             // Handle invalid move
             System.out.println("Invalid move by " + player.getName());
+=======
+    public void playCard(Card card) {
+        GameRequest playCardRequest = new GameRequest(RequestCode.PLAY_CARD, card);
+        try {
+            client.sendRequest(playCardRequest);
+            System.out.println("Play card Request");
+        } catch (IOException e) {
+            System.out.println("Play card Fail");
+            e.printStackTrace();
+>>>>>>> Stashed changes
         }
     }
 
-    public Card drawCard() {
+    public void drawCard() {
         GameRequest drawCardRequest = new GameRequest(RequestCode.DRAW_CARD);
-
         try {
+<<<<<<< Updated upstream
 			client.sendRequest(drawCardRequest);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -105,6 +116,24 @@ public class GameSessionControl {
         } else {
             // Handle error (e.g., penalty)
             System.out.println(player.getName() + " called UNO incorrectly!");
+=======
+            client.sendRequest(drawCardRequest);
+            System.out.println("Draw card Request");
+        } catch (IOException e) {
+            System.out.println("Draw card Fail");
+            e.printStackTrace();
+        }
+    }
+
+    public void announceUno() {
+        GameRequest announceUnoRequest = new GameRequest(RequestCode.ANNOUNCE_UNO);
+        try {
+            client.sendRequest(announceUnoRequest);
+            System.out.println("Announce Uno Request");
+        } catch (IOException e) {
+            System.out.println("Announce Uno Fail");
+            e.printStackTrace();
+>>>>>>> Stashed changes
         }
     }
 

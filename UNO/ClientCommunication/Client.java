@@ -14,6 +14,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -44,23 +45,18 @@ public class Client extends AbstractClient {
     		GameResponse response = (GameResponse) o;
     		handleGameResponse(response);
         } else if (o instanceof GameState) {
-        	//TODO: top card (on discardPile) update image, player hand
-        	//TODO: UPDATE GAMESTATE OBJECT WITH ITS UPDATED DATA
+            GameState gameState = (GameState) o;
+            handleGameStateUpdate(gameState);
             System.out.println("Server responded with the game state");
         } else if (o instanceof Player) {
-        	//TODO: UPDATE PLAYER OBJECT WITH ITS UPDATED DATA
+        	Player player = (Player) o;
+            handlePlayerUpdate(player);
             System.out.println("Player object received.");
         } else if (o instanceof String) {
-        	//TODO: SHOW LOBBY PANEL AND DISABLE STARTGAME BUTTON AND DISPLAY WINNER
-        	//TODO:CREATE AND ADD A NEW BUTTON TO LOBBY PANEL CALLED "Return to Menu"
+        	String response = (String) o;
+        	handleWinnerAnnouncement(response);
             System.out.println("winner received.");
         }
-//        else if (o instanceof List) {
-//    	    List<String> players = (List<String>) o;
-//    	    gameLobbyControl.updateLobbyPlayers(players);
-//    	    driver.showPanel(new GameLobbyPanel(driver));
-//    	    gameLobbyPanel.updateNamesAndScores(players);
-//    	}
     }
 
     @Override
@@ -144,19 +140,25 @@ public class Client extends AbstractClient {
     }
     
     private void handleGameStateUpdate(GameState gameState) {
-        //TODO: Update the game state in the UI
-        // create a GameStatePanel and update its components
-    	//Figure out how to properly do this
-        GameSessionPanel gameStatePanel = new GameSessionPanel(driver);
-        driver.showPanel(gameStatePanel);
-    }
+        GameSessionPanel gameSessionPanel = (GameSessionPanel) driver.getCurrentPanel();
 
+        // Update the top card
+        Card topCard = gameState.getTopCard();
+        gameSessionPanel.updateTopCard(topCard);
+
+        // Update the scores
+        Map<String, Integer> scores = gameState.getScores();
+        gameSessionPanel.updateScores(scores);
+
+        // Update the current player
+        String currentPlayerName = gameState.getCurrentPlayerName();
+        gameSessionPanel.updateCurrentPlayer(currentPlayerName);
+
+    }
+    
     private void handlePlayerUpdate(Player player) {
-        //TODO:  Update the player information in the UI
-        // update the player's hand, score, or other relevant information
-    	//Maybe separate PlayerPanel from gamesessionpanel
-//        PlayerPanel playerPanel = new PlayerPanel(player);
-//        driver.showPanel(playerPanel);
+        GameSessionPanel gameSessionPanel = (GameSessionPanel) driver.getCurrentPanel();
+        gameSessionPanel.updatePlayerHand(player);
     }
 
     private void handleWinnerAnnouncement(String winner) {
