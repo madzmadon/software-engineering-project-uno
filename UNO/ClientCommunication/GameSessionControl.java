@@ -1,27 +1,28 @@
 package ClientCommunication;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import GameLogic.Deck;
+import GameLogic.GameRequest;
 import GameLogic.Player;
+import GameLogic.RequestCode;
 import GameLogic.Card;
 
 public class GameSessionControl {
     private Client client;
-    private String lobbyId;
     private List<Player> players = new ArrayList<>();
     private int currentPlayerIndex = 0;
     private List<Card> discardPile = new ArrayList<>();
     private Deck deck;
 
-    public GameSessionControl(Client client, String lobbyId) {
+    public GameSessionControl(Client client) {
         this.client = client;
-        this.lobbyId = lobbyId;
         this.deck = new Deck(); // Initialize the deck
         deck.shuffle(); // Shuffle the deck
     }
-
+    // TODO: SELECT A COLOR FOR WILD CARDS
     public void addPlayer(Player player) {
         players.add(player);
     }
@@ -38,19 +39,31 @@ public class GameSessionControl {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     }
 
+    //TODO: USE SERVER VALIDATION CHECK FOR CARD
     public boolean isValidMove(Card card) {
         if (discardPile.isEmpty()) {
             return true; // First card can be played
         }
 
         Card topCard = discardPile.get(discardPile.size() - 1);
+        //CHECK FOR MATCH
         return card.getColor() == topCard.getColor() || card.getSymbol().equals(topCard.getSymbol());
     }
 
+    //TODO: Return game request ... LAST CARD PLAYED: Check for server to check if last card
     public void playCard(Player player, Card card) {
         if (isValidMove(card)) {
             boolean removed = player.playCard(card);
             if (removed) {
+                GameRequest playCardRequest = new GameRequest(RequestCode.PLAY_CARD);
+                playCardRequest.setCard(card);
+
+                try {
+					client.sendRequest(playCardRequest);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 discardPile.add(card);
                 nextTurn();
             } else {
@@ -64,11 +77,30 @@ public class GameSessionControl {
     }
 
     public Card drawCard() {
+        GameRequest drawCardRequest = new GameRequest(RequestCode.DRAW_CARD);
+
+        try {
+			client.sendRequest(drawCardRequest);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
         return deck.drawCard();
     }
 
+    // TODO: Repurpose server logic
     public void callUno(Player player) {
         if (player.getHand().size() == 1) {
+            GameRequest announceUnoRequest = new GameRequest(RequestCode.ANNOUNCE_UNO);
+
+            try {
+				client.sendRequest(announceUnoRequest);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
             System.out.println(player.getName() + " called UNO!");
         } else {
             // Handle error (e.g., penalty)
@@ -83,11 +115,6 @@ public class GameSessionControl {
     public void broadcastMessage(String message) {
         System.out.println("Broadcasting: " + message);
         // Here you would actually send a message to all clients
-    }
-
-    public void updateGameState() {
-        Object gameStateUpdate = client.receiveGameState();  // Simulating receiving a game state
-        System.out.println("Game state updated for lobby " + lobbyId + ": " + gameStateUpdate);
     }
 
     private Player getNextPlayer() {

@@ -5,13 +5,14 @@ import javax.swing.*;
 import ClientCommunication.Client;
 
 import java.awt.*;
+import java.io.IOException;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class Driver extends JFrame {
     private JPanel currentPanel;
-    Client client = new Client(host, port);
+    Client client = new Client(this);
     public Driver() {
         setTitle("UNO Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -19,7 +20,12 @@ public class Driver extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Show the initial panel (e.g., StartUpPanel)
+        try {
+			client.openConnection();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        // Show the initial panel
         showPanel(new StartUpPanel(this));
     }
 
@@ -32,12 +38,20 @@ public class Driver extends JFrame {
         revalidate();
         repaint();
     }
-
+    
+    public void sendStatusToPanel(String response) {
+    	JOptionPane.showMessageDialog(null, response, "Error!", JOptionPane.ERROR_MESSAGE);
+    }
+    
     public Client getClient() {
         // Return an instance of the Client class
         return client;
     }
 
+    public JPanel getCurrentPanel() {
+        return currentPanel;
+    }
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override

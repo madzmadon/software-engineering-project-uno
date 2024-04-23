@@ -3,7 +3,7 @@ package ClientCommunication;
 import java.io.Serializable;
 
 public class LoginData implements Serializable {
-    private static final long serialVersionUID = 1L;  // Helps ensure version compatibility during serialization
+    private static final long serialVersionUID = 1L;
     private String username;
     private String password;
 

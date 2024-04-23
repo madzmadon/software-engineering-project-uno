@@ -1,103 +1,71 @@
 package GameLogic;
 
-import javax.swing.*;
+import java.io.Serializable;
 
-import UserInterface.DesignUtils;
+public class Card implements Serializable {
 
-import java.util.HashMap;
-import java.util.Map;
+    private CardColor color;
+    private CardFaceValue face_value;
 
-public abstract class Card {
-    private Color color;
-    private int points;
-    private String imageName;
-
-    private static final Map<String, ImageIcon> cardImages = new HashMap<>();
-    private static final ImageIcon backOfCardImage = DesignUtils.loadCardImage("BackOfCard.png");
-
-    static {
-        // Load all card images
-    	cardImages.put("blue_1", DesignUtils.loadCardImage("blue_1.png"));
-    	cardImages.put("blue_2", DesignUtils.loadCardImage("blue_2.png"));
-    	cardImages.put("blue_3", DesignUtils.loadCardImage("blue_3.png"));
-    	cardImages.put("blue_4", DesignUtils.loadCardImage("blue_4.png"));
-    	cardImages.put("blue_5", DesignUtils.loadCardImage("blue_5.png"));
-    	cardImages.put("blue_6", DesignUtils.loadCardImage("blue_6.png"));
-    	cardImages.put("blue_7", DesignUtils.loadCardImage("blue_7.png"));
-    	cardImages.put("blue_8", DesignUtils.loadCardImage("blue_8.png"));
-    	cardImages.put("blue_9", DesignUtils.loadCardImage("blue_9.png"));
-    	cardImages.put("blue_0", DesignUtils.loadCardImage("blue_0.png"));
-    	cardImages.put("blue_reverse", DesignUtils.loadCardImage("blue_reverse.png"));
-    	cardImages.put("blue_skip", DesignUtils.loadCardImage("blue_skip.png"));
-    	cardImages.put("blue_+2", DesignUtils.loadCardImage("blue_+2.png"));
-
-    	cardImages.put("red_1", DesignUtils.loadCardImage("red_1.png"));
-    	cardImages.put("red_2", DesignUtils.loadCardImage("red_2.png"));
-    	cardImages.put("red_3", DesignUtils.loadCardImage("red_3.png"));
-    	cardImages.put("red_4", DesignUtils.loadCardImage("red_4.png"));
-    	cardImages.put("red_5", DesignUtils.loadCardImage("red_5.png"));
-    	cardImages.put("red_6", DesignUtils.loadCardImage("red_6.png"));
-    	cardImages.put("red_7", DesignUtils.loadCardImage("red_7.png"));
-    	cardImages.put("red_8", DesignUtils.loadCardImage("red_8.png"));
-    	cardImages.put("red_9", DesignUtils.loadCardImage("red_9.png"));
-    	cardImages.put("red_0", DesignUtils.loadCardImage("red_0.png"));
-    	cardImages.put("red_reverse", DesignUtils.loadCardImage("red_reverse.png"));
-    	cardImages.put("red_skip", DesignUtils.loadCardImage("red_skip.png"));
-    	cardImages.put("red_+2", DesignUtils.loadCardImage("red_+2.png"));
-
-    	cardImages.put("green_1", DesignUtils.loadCardImage("green_1.png"));
-    	cardImages.put("green_2", DesignUtils.loadCardImage("green_2.png"));
-       	cardImages.put("green_3", DesignUtils.loadCardImage("green_3.png"));
-    	cardImages.put("green_4", DesignUtils.loadCardImage("green_4.png"));
-    	cardImages.put("green_5", DesignUtils.loadCardImage("green_5.png"));
-    	cardImages.put("green_6", DesignUtils.loadCardImage("green_6.png"));
-    	cardImages.put("green_7", DesignUtils.loadCardImage("green_7.png"));
-    	cardImages.put("green_8", DesignUtils.loadCardImage("green_8.png"));
-    	cardImages.put("green_9", DesignUtils.loadCardImage("green_9.png"));
-    	cardImages.put("green_0", DesignUtils.loadCardImage("green_0.png"));
-    	cardImages.put("green_reverse", DesignUtils.loadCardImage("green_reverse.png"));
-    	cardImages.put("green_skip", DesignUtils.loadCardImage("green_skip.png"));
-    	cardImages.put("green_+2", DesignUtils.loadCardImage("green_+2.png"));
-
-    	cardImages.put("yellow_1", DesignUtils.loadCardImage("yellow_1.png"));
-    	cardImages.put("yellow_2", DesignUtils.loadCardImage("yellow_2.png"));
-       	cardImages.put("yellow_3", DesignUtils.loadCardImage("yellow_3.png"));
-    	cardImages.put("yellow_4", DesignUtils.loadCardImage("yellow_4.png"));
-    	cardImages.put("yellow_5", DesignUtils.loadCardImage("yellow_5.png"));
-    	cardImages.put("yellow_6", DesignUtils.loadCardImage("yellow_6.png"));
-    	cardImages.put("yellow_7", DesignUtils.loadCardImage("yellow_7.png"));
-    	cardImages.put("yellow_8", DesignUtils.loadCardImage("yellow_8.png"));
-    	cardImages.put("yellow_9", DesignUtils.loadCardImage("yellow_9.png"));
-    	cardImages.put("yellow_0", DesignUtils.loadCardImage("yellow_0.png"));
-    	cardImages.put("yellow_reverse", DesignUtils.loadCardImage("yellow_reverse.png"));
-    	cardImages.put("yellow_skip", DesignUtils.loadCardImage("yellow_skip.png"));
-    	cardImages.put("yellow_+2", DesignUtils.loadCardImage("yellow_+2.png"));
-
-    	cardImages.put("draw4", DesignUtils.loadCardImage("draw4.png"));
-    	cardImages.put("wildcard", DesignUtils.loadCardImage("wildcard.png"));
-    }
-
-    public Card(Color color, int points, String imageName) {
+    public Card(CardColor color, CardFaceValue face_value)
+    {
         this.color = color;
-        this.points = points;
-        this.imageName = imageName;
+        this.face_value = face_value;
     }
 
-    public Color getColor() {
+    // Returns the color of the card.
+    public CardColor getCardColor()
+    {
         return color;
     }
 
-    public int getPoints() {
-        return points;
+    // Returns the face value of the card.
+    public CardFaceValue getFaceValue()
+    {
+        return face_value;
     }
 
-    public ImageIcon getImage() {
-        return cardImages.get(imageName);
+    // Returns the point value of the card.
+    public int getPointValue()
+    {
+
+        return this.face_value.getValue();
+
     }
 
-    public static ImageIcon getBackOfCardImage() {
-        return backOfCardImage;
+    // Returns the url of the card's image.
+    public String getCardURL()
+    {
+
+        // Declare local variables.
+        StringBuilder builder = new StringBuilder();
+
+        // Determine if the card is a wildcard.
+        if (color != CardColor.NONE)
+        {
+
+            // Add the color of the card.
+            builder.append(color.get_color());
+
+            // Add an underscore to the string.
+            builder.append('_');
+
+        }
+
+        // Add the face value to the card.
+        builder.append(face_value.getName());
+
+        // Add the file extension to the end.
+        builder.append(".png");
+
+        return builder.toString();
+
     }
 
-    public abstract String getSymbol();
+    // Determines if this and another card match either the color or face value.
+    public boolean cardMatches(Card other)
+    {
+        return (color == other.getCardColor()) || (face_value == other.getFaceValue());
+    }
+
 }

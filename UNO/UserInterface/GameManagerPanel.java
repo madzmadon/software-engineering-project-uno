@@ -15,7 +15,7 @@ public class GameManagerPanel extends JPanel {
 	
     public GameManagerPanel(Driver driver) {
     	
-        Client client = driver.getClient(); // Assuming a getClient() method exists in the Driver class
+        Client client = driver.getClient(); 
         gameManagerControl = new GameManagerControl(client);
     	
         // Set preferred size to 1000x800
@@ -36,7 +36,6 @@ public class GameManagerPanel extends JPanel {
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         // Create buttons
-        JButton startGameButton = DesignUtils.createSpecialButton("Start Game");
         JButton joinGameButton = DesignUtils.createSpecialButton("Join Game");
         JButton howToPlayButton = DesignUtils.createButton("How to Play");
         JButton logoutButton = DesignUtils.createButton("Log out");
@@ -44,31 +43,17 @@ public class GameManagerPanel extends JPanel {
         
         // Set maximum size for buttons to ensure uniformity
         Dimension buttonSize = new Dimension(300, 70);
-        startGameButton.setMaximumSize(buttonSize);
         joinGameButton.setMaximumSize(buttonSize);
         howToPlayButton.setMaximumSize(buttonSize);
         logoutButton.setMaximumSize(buttonSize);
-       
-        startGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String lobbyId = generateRandomLobbyId();
-                gameManagerControl.startGameSession(lobbyId);
-                driver.showPanel(new GameLobbyPanel(driver, lobbyId));
-            }
-        });
-
+        
         joinGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Generate a random lobby ID
-                String lobbyId = generateRandomLobbyId();
 
-                // Join an existing game session with the random lobby ID
-                gameManagerControl.startGameSession(lobbyId);
+                // Join an game
+                gameManagerControl.joinGame();
 
-                // Open the GameLobbyPanel
-                driver.showPanel(new GameLobbyPanel(driver, lobbyId));
             }
         });
         
@@ -77,8 +62,7 @@ public class GameManagerPanel extends JPanel {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Show the StartUpPanel
-                driver.showPanel(new StartUpPanel(driver));
+            	gameManagerControl.logOut();
             }
         });
 
@@ -90,8 +74,6 @@ public class GameManagerPanel extends JPanel {
 
         // Add buttons to the buttonPanel with vertical and horizontal center alignment
         buttonPanel.add(Box.createVerticalGlue());
-        buttonPanel.add(startGameButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(joinGameButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(howToPlayButton);
@@ -107,18 +89,5 @@ public class GameManagerPanel extends JPanel {
 
         // Add the content panel to the GameManagerPanel
         add(contentPanel, BorderLayout.CENTER);
-    }
-
-    private String generateRandomLobbyId() {
-        // Generate a random 6-character lobby ID
-        Random random = new Random();
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder lobbyId = new StringBuilder();
-
-        for (int i = 0; i < 6; i++) {
-            lobbyId.append(characters.charAt(random.nextInt(characters.length())));
-        }
-
-        return lobbyId.toString();
     }
 }

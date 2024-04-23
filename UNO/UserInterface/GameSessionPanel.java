@@ -30,9 +30,10 @@ public class GameSessionPanel extends JPanel {
     private JButton discardButton;
     private JButton unoButton;
 
-    public GameSessionPanel(Driver driver, String lobbyId) {
-        Client client = driver.getClient(); // Assuming a getClient() method exists in the Driver class
-        gameSessionControl = new GameSessionControl(client, lobbyId);
+    public GameSessionPanel(Driver driver) {
+        Client client = driver.getClient();
+        gameSessionControl = new GameSessionControl(client);
+        // TODO: Instead of showing all player panels. Only show one player point of view with their cards, and then a list of player names with their card amount
         
         setPreferredSize(new Dimension(1000, 800));
         setLayout(new BorderLayout());
