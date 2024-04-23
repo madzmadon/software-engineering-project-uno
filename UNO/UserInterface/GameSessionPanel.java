@@ -21,19 +21,15 @@ import ClientCommunication.Client;
 public class GameSessionPanel extends JPanel {
 	private GameSessionControl gameSessionControl;
     private JLabel player1Label;
-    private JLabel player2Label;
-    private JLabel player3Label;
-    private JLabel player4Label;
-    private JLabel player5Label;
-    private JLabel player6Label;
     private JButton drawButton;
     private JButton discardButton;
     private JButton unoButton;
+    private JLabel playerNamesAndHandCount;
 
     public GameSessionPanel(Driver driver) {
         Client client = driver.getClient();
         gameSessionControl = new GameSessionControl(client);
-        // TODO: Instead of showing all player panels. Only show one player point of view with their cards, and then a list of player names with their card amount
+        // TODO: playerNamesAndHandCount Only show one player point of view with their cards, and then a list of player names with their card amount
         
         setPreferredSize(new Dimension(1000, 800));
         setLayout(new BorderLayout());
@@ -44,30 +40,7 @@ public class GameSessionPanel extends JPanel {
         topPlayerPanel.setLayout(new BoxLayout(topPlayerPanel, BoxLayout.X_AXIS));
         topPlayerPanel.setBackground(Color.decode("#1E2448"));
         topPlayerPanel.setBorder(DesignUtils.createEmptyBorder(10, 10, 10, 10));
-
-        JPanel player1Panel = createPlayerPanel("Player 1");
-        JPanel player2Panel = createPlayerPanel("Player 2");
-        topPlayerPanel.add(player1Panel);
-        topPlayerPanel.add(Box.createHorizontalStrut(20));
-        topPlayerPanel.add(player2Panel);
-
-        // Left Player Panel
-        JPanel leftPlayerPanel = new JPanel();
-        leftPlayerPanel.setLayout(new BoxLayout(leftPlayerPanel, BoxLayout.Y_AXIS));
-        leftPlayerPanel.setBackground(Color.decode("#1E2448"));
-        leftPlayerPanel.setBorder(DesignUtils.createEmptyBorder(10, 10, 10, 10));
-
-        JPanel player3Panel = createPlayerPanel("Player 3");
-        leftPlayerPanel.add(player3Panel);
-
-        // Right Player Panel
-        JPanel rightPlayerPanel = new JPanel();
-        rightPlayerPanel.setLayout(new BoxLayout(rightPlayerPanel, BoxLayout.Y_AXIS));
-        rightPlayerPanel.setBackground(Color.decode("#1E2448"));
-        rightPlayerPanel.setBorder(DesignUtils.createEmptyBorder(10, 10, 10, 10));
-
-        JPanel player4Panel = createPlayerPanel("Player 4");
-        rightPlayerPanel.add(player4Panel);
+        topPlayerPanel.add(playerNamesAndHandCount);
 
         // Bottom Player Panels
         JPanel bottomPlayerPanel = new JPanel();
@@ -75,11 +48,9 @@ public class GameSessionPanel extends JPanel {
         bottomPlayerPanel.setBackground(Color.decode("#1E2448"));
         bottomPlayerPanel.setBorder(DesignUtils.createEmptyBorder(10, 10, 10, 10));
 
-        JPanel player5Panel = createPlayerPanel("Player 5");
-        JPanel player6Panel = createPlayerPanel("You");
-        bottomPlayerPanel.add(player5Panel);
+        JPanel player1Panel = createPlayerPanel("You");
         bottomPlayerPanel.add(Box.createHorizontalStrut(20));
-        bottomPlayerPanel.add(player6Panel);
+        bottomPlayerPanel.add(player1Panel);
 
         // Draw Pile and Discard Pile
         JPanel drawDiscardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
@@ -103,46 +74,25 @@ public class GameSessionPanel extends JPanel {
 
         // Add components to the main panel
         add(topPlayerPanel, BorderLayout.NORTH);
-        add(leftPlayerPanel, BorderLayout.WEST);
-        add(rightPlayerPanel, BorderLayout.EAST);
         add(bottomPlayerPanel, BorderLayout.SOUTH);
         add(drawDiscardPanel, BorderLayout.CENTER);
         add(unoPanel, BorderLayout.SOUTH);
     
 
         drawButton.addActionListener(e -> {
-            Card drawnCard = gameSessionControl.drawCard(); // Simulate drawing a card
-            Player currentPlayer = gameSessionControl.getCurrentPlayer();
-            currentPlayer.drawCard(drawnCard); // Add the drawn card to the current player's hand
+            gameSessionControl.drawCard(); // Simulate drawing a card
             // Update the UI to reflect the changes
         });
 
 
         discardButton.addActionListener(e -> {
-            Player currentPlayer = gameSessionControl.getCurrentPlayer();
-            List<Card> hand = currentPlayer.getHand(); // Get the current player's hand
-            // Here you would implement a way for the player to select a card from their hand
-            // For demonstration purposes, let's assume the first card in hand is selected
-            if (!hand.isEmpty()) {
-                Card selectedCard = hand.get(0); // Select the first card in hand (you may implement a selection mechanism)
-                gameSessionControl.playCard(currentPlayer, selectedCard); // Discard the selected card
-                // Update the UI to reflect the changes (optional)
-            } else {
-                // Handle error: No cards in hand to discard
-                System.out.println("Error: No cards in hand to discard for " + currentPlayer.getName());
-            }
+        		gameSessionControl.playCard(); // Discard the selected card
+                // Update the UI to reflect the changes
         });
 
 
         unoButton.addActionListener(e -> {
-            Player currentPlayer = gameSessionControl.getCurrentPlayer();
-            if (currentPlayer.getHand().size() == 1) {
-                gameSessionControl.callUno(currentPlayer); // Call UNO
-                // Handle the UNO call (e.g., update UI, apply penalties if needed)
-            } else {
-                // Handle error: Player cannot call UNO because they have more than one card in hand
-                System.out.println(currentPlayer.getName() + " cannot call UNO because they have more than one card in hand.");
-            }
+        	gameSessionControl.announceUno(); // Call UNO
         });
 
     }
