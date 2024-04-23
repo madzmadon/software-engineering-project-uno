@@ -1,5 +1,7 @@
 package ClientCommunication;
 
+import java.io.IOException;
+
 import Database.CreateAccountData;
 
 public class CreateAccountControl {
