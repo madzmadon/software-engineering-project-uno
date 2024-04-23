@@ -5,6 +5,7 @@ import javax.swing.*;
 import ClientCommunication.Client;
 
 import java.awt.*;
+import java.io.IOException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +20,12 @@ public class Driver extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Show the initial panel (e.g., StartUpPanel)
+        try {
+			client.openConnection();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        // Show the initial panel
         showPanel(new StartUpPanel(this));
     }
 
